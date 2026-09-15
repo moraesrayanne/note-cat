@@ -68,7 +68,7 @@ function AddButton({ onPress }: { onPress: () => void }) {
 
 function MainTabs() {
   const insets = useSafeAreaInsets();
-  const bottomPadding = insets.bottom + 12;
+  const bottomPadding = insets.bottom + 20;
 
   return (
     <Tab.Navigator
