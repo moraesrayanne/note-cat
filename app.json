@@ -32,6 +32,7 @@
       [
         "expo-notifications",
         {
+          "icon": "./assets/cat-icon.png",
           "sounds": []
         }
       ],
