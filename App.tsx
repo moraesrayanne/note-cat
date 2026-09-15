@@ -10,7 +10,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StatusBar } from 'expo-status-bar';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
   useFonts,
   DMSans_400Regular,
@@ -67,6 +67,9 @@ function AddButton({ onPress }: { onPress: () => void }) {
 }
 
 function MainTabs() {
+  const insets = useSafeAreaInsets();
+  const bottomPadding = Math.max(insets.bottom, 10);
+
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -78,9 +81,9 @@ function MainTabs() {
           backgroundColor: colors.cardBg,
           borderTopColor: colors.navBorder,
           borderTopWidth: 1,
-          paddingBottom: 28,
+          paddingBottom: bottomPadding,
           paddingTop: 10,
-          height: 95,
+          height: 60 + bottomPadding,
         },
         tabBarActiveTintColor: colors.primary,
         tabBarInactiveTintColor: colors.textLight,

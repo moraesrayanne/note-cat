@@ -1,18 +1,23 @@
 import * as Notifications from 'expo-notifications';
-import { Platform } from 'react-native';
+import Constants from 'expo-constants';
 import { Medication } from '../types';
 
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: true,
-    shouldSetBadge: false,
-    shouldShowBanner: true,
-    shouldShowList: true,
-  }),
-});
+const isExpoGo = Constants.appOwnership === 'expo';
+
+if (!isExpoGo) {
+  Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+      shouldShowAlert: true,
+      shouldPlaySound: true,
+      shouldSetBadge: false,
+      shouldShowBanner: true,
+      shouldShowList: true,
+    }),
+  });
+}
 
 export async function requestPermissions(): Promise<boolean> {
+  if (isExpoGo) return false;
   const { status: existing } = await Notifications.getPermissionsAsync();
   if (existing === 'granted') return true;
 
@@ -25,6 +30,7 @@ function getMedNotificationId(medId: string): string {
 }
 
 export async function scheduleMedNotification(med: Medication): Promise<void> {
+  if (isExpoGo) return;
   const granted = await requestPermissions();
   if (!granted) return;
 
@@ -48,10 +54,12 @@ export async function scheduleMedNotification(med: Medication): Promise<void> {
 }
 
 export async function cancelMedNotification(medId: string): Promise<void> {
+  if (isExpoGo) return;
   await Notifications.cancelScheduledNotificationAsync(getMedNotificationId(medId));
 }
 
 export async function syncAllNotifications(meds: Medication[]): Promise<void> {
+  if (isExpoGo) return;
   const granted = await requestPermissions();
   if (!granted) return;
 
