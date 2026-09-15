@@ -8,6 +8,7 @@ import {
   Alert,
   KeyboardAvoidingView,
   Platform,
+  Image,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAuth } from '../contexts/AuthContext';
@@ -46,23 +47,30 @@ export default function LoginScreen() {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <View style={styles.content}>
-        <Text style={styles.emoji}>🐱</Text>
+        <View style={styles.photoContainer}>
+          <Image
+            source={require('../../assets/cat-login.png')}
+            style={styles.photoImg}
+          />
+        </View>
         <Text style={styles.title}>Note Cat</Text>
-        <Text style={styles.subtitle}>Controle de medicamentos do Baden</Text>
+        <Text style={styles.subtitle}>
+          Controle de medicamentos do seu gato
+        </Text>
 
         <TextInput
           style={styles.input}
-          placeholder="Email"
+          placeholder='Email'
           placeholderTextColor={colors.textMuted}
           value={email}
           onChangeText={setEmail}
-          keyboardType="email-address"
-          autoCapitalize="none"
+          keyboardType='email-address'
+          autoCapitalize='none'
         />
 
         <TextInput
           style={styles.input}
-          placeholder="Senha"
+          placeholder='Senha'
           placeholderTextColor={colors.textMuted}
           value={password}
           onChangeText={setPassword}
@@ -99,10 +107,23 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: 32,
   },
-  emoji: {
-    fontSize: 64,
-    textAlign: 'center',
-    marginBottom: 8,
+  photoContainer: {
+    alignSelf: 'center',
+    marginBottom: 12,
+    width: 88,
+    height: 88,
+    borderRadius: 44,
+    borderWidth: 2.5,
+    borderColor: colors.primaryBorder,
+    backgroundColor: colors.primaryBg,
+    justifyContent: 'center',
+    alignItems: 'center',
+    overflow: 'hidden',
+  },
+  photoImg: {
+    width: 88,
+    height: 88,
+    borderRadius: 44,
   },
   title: {
     fontSize: 32,
