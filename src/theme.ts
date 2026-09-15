@@ -12,7 +12,6 @@ export const colors = {
   textLight: '#D4B5AD',
   success: '#4CAF50',
   successBg: '#ECFFF0',
-  danger: '#E8614D',
   border: '#FFE8E0',
   navBorder: '#FFE8E0',
 };

@@ -16,7 +16,7 @@ if (!isExpoGo) {
   });
 }
 
-export async function requestPermissions(): Promise<boolean> {
+async function requestPermissions(): Promise<boolean> {
   if (isExpoGo) return false;
   const { status: existing } = await Notifications.getPermissionsAsync();
   if (existing === 'granted') return true;
