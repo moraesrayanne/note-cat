@@ -2,7 +2,7 @@ import React, { useCallback, useRef, useState } from 'react';
 import {
   View,
   Text,
-  FlatList,
+  ScrollView,
   TouchableOpacity,
   RefreshControl,
   Animated,
@@ -252,57 +252,51 @@ export default function HomeScreen() {
         </View>
       </View>
 
-      <FlatList
-        data={[{ key: 'content' }]}
-        renderItem={() => (
-          <View>
-            <View style={styles.statsWrapper}>
-              <LinearGradient
-                colors={[colors.primary, colors.primaryLight]}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                style={styles.statsCard}
-              >
-                <View style={styles.statsCircle1} />
-                <View style={styles.statsCircle2} />
-                <Text style={styles.statsDate}>Hoje, {getDateStr()}</Text>
-                <Text style={styles.statsCount}>
-                  {meds.length} remédio{meds.length !== 1 ? 's' : ''}
-                </Text>
-                <Text style={styles.statsDetail}>
-                  {taken.length} tomado{taken.length !== 1 ? 's' : ''} · {pending.length} pendente{pending.length !== 1 ? 's' : ''}
-                </Text>
-                <View style={styles.progressBg}>
-                  <View style={[styles.progressFill, { width: `${pct}%` }]} />
-                </View>
-              </LinearGradient>
+      <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+        <View style={styles.statsWrapper}>
+          <LinearGradient
+            colors={[colors.primary, colors.primaryLight]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.statsCard}
+          >
+            <View style={styles.statsCircle1} />
+            <View style={styles.statsCircle2} />
+            <Text style={styles.statsDate}>Hoje, {getDateStr()}</Text>
+            <Text style={styles.statsCount}>
+              {meds.length} remédio{meds.length !== 1 ? 's' : ''}
+            </Text>
+            <Text style={styles.statsDetail}>
+              {taken.length} tomado{taken.length !== 1 ? 's' : ''} · {pending.length} pendente{pending.length !== 1 ? 's' : ''}
+            </Text>
+            <View style={styles.progressBg}>
+              <View style={[styles.progressFill, { width: `${pct}%` }]} />
             </View>
+          </LinearGradient>
+        </View>
 
-            {pending.length > 0 && (
-              <View style={styles.section}>
-                <Text style={styles.sectionLabel}>Pendentes</Text>
-                {pending.map(renderPendingItem)}
-              </View>
-            )}
-
-            {taken.length > 0 && (
-              <View style={styles.section}>
-                <Text style={styles.sectionLabelDone}>Tomados</Text>
-                {taken.map(renderTakenItem)}
-              </View>
-            )}
-
-            {meds.length === 0 && (
-              <View style={styles.emptyContainer}>
-                <Feather name="inbox" size={40} color={colors.textMuted} />
-                <Text style={styles.emptyText}>Nenhum remédio cadastrado</Text>
-                <Text style={styles.emptySubtext}>Vá em Remédios para adicionar</Text>
-              </View>
-            )}
+        {pending.length > 0 && (
+          <View style={styles.section}>
+            <Text style={styles.sectionLabel}>Pendentes</Text>
+            {pending.map(renderPendingItem)}
           </View>
         )}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-      />
+
+        {taken.length > 0 && (
+          <View style={styles.section}>
+            <Text style={styles.sectionLabelDone}>Tomados</Text>
+            {taken.map(renderTakenItem)}
+          </View>
+        )}
+
+        {meds.length === 0 && (
+          <View style={styles.emptyContainer}>
+            <Feather name="inbox" size={40} color={colors.textMuted} />
+            <Text style={styles.emptyText}>Nenhum remédio cadastrado</Text>
+            <Text style={styles.emptySubtext}>Vá em Remédios para adicionar</Text>
+          </View>
+        )}
+      </ScrollView>
     </View>
   );
 }

@@ -13,7 +13,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { MedicationLog } from '@/types';
 import { ListSkeleton } from '@/components/Skeleton';
 import { fetchMedicationLogs } from '@/services/medications';
-import { formatDateLabel, formatTimeFromISO } from '@/utils/date';
+import { formatDateLabel, formatTimeFromISO, toDateStr } from '@/utils/date';
 import { styles } from './styles';
 
 interface Section {
@@ -34,9 +34,8 @@ export default function HistoryScreen() {
 
     const since = new Date();
     since.setDate(since.getDate() - daysToLoad);
-    const sinceStr = `${since.getFullYear()}-${String(since.getMonth() + 1).padStart(2, '0')}-${String(since.getDate()).padStart(2, '0')}`;
 
-    const { data } = await fetchMedicationLogs(user.id, sinceStr);
+    const { data } = await fetchMedicationLogs(user.id, toDateStr(since));
 
     const grouped: Record<string, MedicationLog[]> = {};
     for (const log of data) {
