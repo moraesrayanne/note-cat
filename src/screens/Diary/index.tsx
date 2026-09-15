@@ -23,10 +23,10 @@ import { styles } from './styles';
 const ENERGY_EMOJIS = ['😿', '😾', '🐱', '😸', '😻'];
 const ENERGY_LABELS = ['Muito baixa', 'Baixa', 'Normal', 'Boa', 'Ótima'];
 
-function energyColor(level: number): string {
-  if (level >= 4) return colors.primary;
-  if (level <= 2) return '#E57373';
-  return colors.textMuted;
+function energyValueStyle(level: number) {
+  if (level >= 4) return styles.gridCellValueGood;
+  if (level <= 2) return styles.gridCellValueBad;
+  return styles.gridCellValueNormal;
 }
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Diary'>;
@@ -67,82 +67,137 @@ export default function DiaryScreen({ navigation }: Props) {
     const hasEnergy = item.energy_level != null;
     const emoji = hasEnergy ? ENERGY_EMOJIS[item.energy_level! - 1] : null;
     const label = hasEnergy ? ENERGY_LABELS[item.energy_level! - 1] : null;
-    const color = hasEnergy ? energyColor(item.energy_level!) : colors.textMuted;
+    const energyStyle = hasEnergy
+      ? energyValueStyle(item.energy_level!)
+      : styles.gridCellValueNormal;
+
+    const isToday = item.date === getTodayDate();
+    const showGrid = hasEnergy || item.used_litter_box != null;
 
     return (
-      <TouchableOpacity
-        style={styles.card}
-        onPress={() => navigation.navigate('AddDiaryEntry', { entry: item })}
-        activeOpacity={0.75}
-      >
-        <View style={styles.cardHeader}>
-          <Text style={styles.cardDate}>{formatDateLabel(item.date)}</Text>
-          <View style={styles.energyBadge}>
-            {hasEnergy && (
-              <Text style={[styles.energyLabel, { color }]}>
-                {label} {emoji}
+      <View style={styles.entryGroup}>
+        {/* Big white card — fully tappable */}
+        <TouchableOpacity
+          style={styles.card}
+          onPress={() => navigation.navigate('AddDiaryEntry', { entry: item })}
+          activeOpacity={0.75}
+        >
+          {/* Date row inside the card */}
+          <View style={styles.cardDateRow}>
+            <View style={styles.sectionLeft}>
+              <Text style={styles.sectionDateText}>
+                {formatDateLabel(item.date)}
               </Text>
-            )}
-          </View>
-          <Feather name="chevron-right" size={16} color={colors.textLight} />
-        </View>
-
-        {item.feeding ? (
-          <Text style={styles.feedingText} numberOfLines={2}>
-            {item.feeding}
-          </Text>
-        ) : null}
-
-        <View style={styles.chipsRow}>
-          {item.used_litter_box != null && (
-            <View
-              style={[
-                styles.chip,
-                item.used_litter_box ? styles.chipGreen : styles.chipRed,
-              ]}
-            >
-              <Text
-                style={[
-                  styles.chipText,
-                  item.used_litter_box ? styles.chipTextGreen : styles.chipTextRed,
-                ]}
-              >
-                {item.used_litter_box ? '✓' : '✗'} Caixinha
-              </Text>
+              {isToday && <View style={styles.sectionDot} />}
             </View>
-          )}
-          {item.blood_pressure ? (
-            <View style={styles.chip}>
-              <Text style={styles.chipText}>♥ {item.blood_pressure}</Text>
+            <Feather name='chevron-right' size={18} color={colors.textLight} />
+          </View>
+
+          {/* Mini card: Alimentação (salmon) */}
+          {item.feeding ? (
+            <View style={styles.feedingMiniCard}>
+              <View style={styles.feedingLabelRow}>
+                <Text style={{ fontSize: 14 }}>🐾</Text>
+                <Text style={styles.feedingLabelText}>Alimentação</Text>
+              </View>
+              <Text style={styles.feedingText}>{item.feeding}</Text>
             </View>
           ) : null}
-        </View>
 
-        {item.notes ? (
-          <Text style={styles.notesText} numberOfLines={2}>
-            {item.notes}
-          </Text>
-        ) : null}
-      </TouchableOpacity>
+          {/* Mini cards row: Disposição + Caixinha */}
+          {showGrid ? (
+            <View style={styles.gridRow}>
+              {hasEnergy ? (
+                <View style={[styles.gridMiniCard, styles.disposicaoCard]}>
+                  <Text style={styles.gridEmoji}>{emoji}</Text>
+                  <Text style={styles.gridCellLabel}>Disposição</Text>
+                  <Text style={[styles.gridCellValue, energyStyle]}>
+                    {label}
+                  </Text>
+                </View>
+              ) : null}
+
+              {item.used_litter_box != null ? (
+                <View
+                  style={[
+                    styles.gridMiniCard,
+                    item.used_litter_box
+                      ? styles.caixinhaCardGreen
+                      : styles.caixinhaCardRed,
+                  ]}
+                >
+                  <Feather
+                    name={item.used_litter_box ? 'check' : 'x'}
+                    size={22}
+                    color={item.used_litter_box ? colors.success : '#E57373'}
+                  />
+                  <Text style={styles.gridCellLabel}>Caixinha</Text>
+                  <Text
+                    style={[
+                      styles.gridCellValue,
+                      item.used_litter_box
+                        ? styles.gridCellValueGreen
+                        : styles.gridCellValueBad,
+                    ]}
+                  >
+                    {item.used_litter_box ? 'Usou' : 'Não usou'}
+                  </Text>
+                </View>
+              ) : null}
+            </View>
+          ) : null}
+
+          {/* Mini card: Pressão */}
+          {item.blood_pressure ? (
+            <View style={styles.bpMiniCard}>
+              <View style={styles.bpLabelRow}>
+                <Text style={{ fontSize: 14 }}>❤️</Text>
+                <Text style={styles.gridCellLabel}>Pressão:</Text>
+                <Text style={styles.bpValue}>{item.blood_pressure}</Text>
+              </View>
+            </View>
+          ) : null}
+
+          {/* Mini card: Notas */}
+          {item.notes ? (
+            <View style={styles.notesMiniCard}>
+              <Feather
+                name='message-circle'
+                size={14}
+                color={colors.primary}
+                style={{ marginTop: 2, opacity: 0.75 }}
+              />
+              <Text style={styles.notesText}>{item.notes}</Text>
+            </View>
+          ) : null}
+        </TouchableOpacity>
+      </View>
     );
   };
 
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
       <View style={styles.headerRow}>
-        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => navigation.goBack()}
+        >
           <Text style={styles.backArrow}>‹</Text>
         </TouchableOpacity>
         <View style={styles.headerTexts}>
           <Text style={styles.headerTitle}>Diário</Text>
-          <Text style={styles.headerSubtitle}>Acompanhamento diário do {catName}</Text>
+          <Text style={styles.headerSubtitle}>
+            Acompanhamento diário do {catName}
+          </Text>
         </View>
         <TouchableOpacity
           style={[styles.addButton, hasTodayEntry && styles.addButtonDisabled]}
-          onPress={() => !hasTodayEntry && navigation.navigate('AddDiaryEntry', {})}
+          onPress={() =>
+            !hasTodayEntry && navigation.navigate('AddDiaryEntry', {})
+          }
           activeOpacity={hasTodayEntry ? 1 : 0.8}
         >
-          <Feather name="plus" size={20} color="#FFF" />
+          <Feather name='plus' size={20} color='#FFF' />
         </TouchableOpacity>
       </View>
 
@@ -166,7 +221,9 @@ export default function DiaryScreen({ navigation }: Props) {
           keyExtractor={(item) => item.id}
           renderItem={renderEntry}
           contentContainerStyle={styles.list}
-          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
           showsVerticalScrollIndicator={false}
           ListFooterComponent={<View style={{ height: insets.bottom + 16 }} />}
         />

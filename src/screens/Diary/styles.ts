@@ -64,82 +64,161 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingTop: 12,
   },
+
+  // ── Entry group ───────────────────────────────────────────────
+  entryGroup: {
+    marginBottom: 20,
+  },
+
+  // ── Big white card (fully tappable) ──────────────────────────
   card: {
     backgroundColor: colors.cardBg,
     borderRadius: 18,
-    padding: 16,
-    marginBottom: 12,
-    shadowColor: colors.primary,
+    padding: 12,
+    gap: 8,
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.06,
-    shadowRadius: 8,
+    shadowRadius: 10,
     elevation: 2,
   },
-  cardHeader: {
+
+  // Date row inside the card
+  cardDateRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 8,
+    justifyContent: 'space-between',
+    paddingHorizontal: 2,
+    paddingBottom: 4,
   },
-  cardDate: {
-    fontSize: 16,
+  sectionLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  sectionDateText: {
+    fontSize: 17,
     fontFamily: fonts.bold,
     color: colors.text,
-    flex: 1,
   },
-  energyBadge: {
-    marginRight: 6,
+  sectionDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: colors.primary,
   },
-  energyLabel: {
-    fontSize: 13,
+
+  // ── Mini card: Alimentação (salmon) ───────────────────────────
+  feedingMiniCard: {
+    backgroundColor: colors.primaryBg,
+    borderRadius: 12,
+    padding: 12,
+    gap: 4,
+  },
+  feedingLabelRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+  },
+  feedingLabelText: {
+    fontSize: 12,
     fontFamily: fonts.semibold,
+    color: colors.primary,
   },
   feedingText: {
     fontSize: 14,
     fontFamily: fonts.regular,
     color: colors.text,
-    marginBottom: 10,
     lineHeight: 20,
   },
-  chipsRow: {
+
+  // ── Grid row: Disposição + Caixinha ──────────────────────────
+  gridRow: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 6,
-    marginBottom: 6,
+    gap: 8,
   },
-  chip: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: colors.primaryBg,
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 20,
+
+  // Each grid mini card
+  gridMiniCard: {
+    flex: 1,
+    borderRadius: 12,
+    padding: 12,
     gap: 4,
   },
-  chipGreen: {
-    backgroundColor: '#ECFFF0',
+  disposicaoCard: {
+    backgroundColor: colors.primaryBg,
   },
-  chipRed: {
+  caixinhaCardGreen: {
+    backgroundColor: colors.successBg,
+  },
+  caixinhaCardRed: {
     backgroundColor: '#FFF5F5',
   },
-  chipText: {
+
+  gridEmoji: {
+    fontSize: 26,
+    lineHeight: 32,
+  },
+  gridCellLabel: {
     fontSize: 12,
-    fontFamily: fonts.medium,
+    fontFamily: fonts.regular,
     color: colors.textMuted,
   },
-  chipTextGreen: {
+  gridCellValue: {
+    fontSize: 14,
+    fontFamily: fonts.semibold,
+  },
+  gridCellValueGood: {
+    color: colors.primary,
+  },
+  gridCellValueBad: {
+    color: '#E57373',
+  },
+  gridCellValueNormal: {
+    color: colors.textMuted,
+  },
+  gridCellValueGreen: {
     color: colors.success,
   },
-  chipTextRed: {
-    color: '#E57373',
+
+  // ── Mini card: Pressão ────────────────────────────────────────
+  bpMiniCard: {
+    backgroundColor: '#FFF5F2',
+    borderRadius: 12,
+    padding: 12,
+    gap: 4,
+  },
+  bpLabelRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+  },
+  bpValue: {
+    fontSize: 14,
+    fontFamily: fonts.bold,
+    color: colors.text,
+  },
+
+  // ── Mini card: Notas ──────────────────────────────────────────
+  notesMiniCard: {
+    backgroundColor: colors.primaryBg,
+    borderRadius: 12,
+    padding: 12,
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 8,
   },
   notesText: {
     fontSize: 13,
     fontFamily: fonts.regular,
-    color: colors.textMuted,
+    color: colors.primary,
     fontStyle: 'italic',
-    marginTop: 6,
+    flex: 1,
     lineHeight: 18,
+    opacity: 0.75,
   },
+
+  // ── Empty state ───────────────────────────────────────────────
   emptyContainer: {
     flex: 1,
     alignItems: 'center',
