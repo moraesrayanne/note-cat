@@ -12,6 +12,8 @@ import { useFocusEffect } from '@react-navigation/native';
 
 import { useAuth } from '@/contexts/AuthContext';
 import { useProfile } from '@/contexts/ProfileContext';
+import { ScreenHeader } from '@/components/ScreenHeader';
+import { catIcon, CAT_ICON_BLURHASH } from '@/assets';
 import { colors } from '@/theme';
 import { saveProfile } from '@/services/profile';
 import { styles } from './styles';
@@ -57,19 +59,20 @@ export default function ProfileScreen() {
 
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Perfil</Text>
-        <Text style={styles.subtitle}>Informações do gatinho</Text>
-      </View>
+      <ScreenHeader
+        title="Perfil"
+        subtitle="Informações do gatinho"
+        style={styles.header}
+      />
 
       <View style={styles.photoContainer}>
         <View style={styles.photoPlaceholder}>
           <Image
-            source={require('../../../assets/cat-icon.png')}
+            source={catIcon}
             style={styles.photoImg}
             contentFit="cover"
             transition={200}
-            placeholder={{ blurhash: 'LKO2?U%2Tw=w]~RBVZRi};RPxuwH' }}
+            placeholder={{ blurhash: CAT_ICON_BLURHASH }}
           />
         </View>
       </View>

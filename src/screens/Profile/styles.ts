@@ -10,17 +10,6 @@ export const styles = StyleSheet.create({
   header: {
     marginBottom: 24,
   },
-  title: {
-    fontSize: 28,
-    fontFamily: fonts.bold,
-    color: colors.text,
-  },
-  subtitle: {
-    fontSize: 13,
-    color: colors.textMuted,
-    fontFamily: fonts.regular,
-    marginTop: 4,
-  },
   photoContainer: {
     alignSelf: 'center',
     marginBottom: 28,

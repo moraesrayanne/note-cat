@@ -13,6 +13,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Feather } from '@expo/vector-icons';
 
 import { useProfile } from '@/contexts/ProfileContext';
+import { catIcon, CAT_ICON_BLURHASH } from '@/assets';
 import { colors } from '@/theme';
 import { HomeSkeleton } from '@/components/Skeleton';
 import { formatTime, getGreeting, getDateStr } from '@/utils/date';
@@ -108,11 +109,11 @@ export default function HomeScreen() {
       <View style={styles.headerRow}>
         <View style={styles.catPhoto}>
           <Image
-            source={require('../../../assets/cat-icon.png')}
+            source={catIcon}
             style={styles.catPhotoImg}
             contentFit="cover"
             transition={200}
-            placeholder={{ blurhash: 'LKO2?U%2Tw=w]~RBVZRi};RPxuwH' }}
+            placeholder={{ blurhash: CAT_ICON_BLURHASH }}
           />
         </View>
         <View>

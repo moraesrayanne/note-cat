@@ -10,17 +10,6 @@ export const styles = StyleSheet.create({
     padding: 24,
     paddingBottom: 16,
   },
-  title: {
-    fontSize: 28,
-    fontFamily: fonts.bold,
-    color: colors.text,
-  },
-  subtitle: {
-    fontSize: 13,
-    color: colors.textMuted,
-    fontFamily: fonts.regular,
-    marginTop: 4,
-  },
   list: {
     paddingHorizontal: 24,
     paddingBottom: 100,

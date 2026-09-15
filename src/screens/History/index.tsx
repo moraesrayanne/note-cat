@@ -11,6 +11,7 @@ import { Feather } from '@expo/vector-icons';
 
 import { useAuth } from '@/contexts/AuthContext';
 import { useProfile } from '@/contexts/ProfileContext';
+import { ScreenHeader } from '@/components/ScreenHeader';
 import { MedicationLog } from '@/types';
 import { ListSkeleton } from '@/components/Skeleton';
 import { fetchMedicationLogs } from '@/services/medications';
@@ -91,10 +92,11 @@ export default function HistoryScreen() {
 
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Histórico</Text>
-        <Text style={styles.subtitle}>Veja o que o {catName} já tomou</Text>
-      </View>
+      <ScreenHeader
+        title="Histórico"
+        subtitle={`Veja o que o ${catName} já tomou`}
+        style={styles.header}
+      />
 
       {loading ? (
         <ListSkeleton count={4} />

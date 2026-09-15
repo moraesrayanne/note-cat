@@ -13,17 +13,6 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  title: {
-    fontSize: 28,
-    fontFamily: fonts.bold,
-    color: colors.text,
-  },
-  subtitle: {
-    fontSize: 13,
-    color: colors.textMuted,
-    fontFamily: fonts.regular,
-    marginTop: 4,
-  },
   list: {
     paddingHorizontal: 24,
     paddingBottom: 24,

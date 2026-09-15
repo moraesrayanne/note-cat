@@ -5,6 +5,7 @@ import {
   FlatList,
   TouchableOpacity,
 } from 'react-native';
+
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -15,6 +16,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Medication } from '@/types';
 import { colors } from '@/theme';
 import { ListSkeleton } from '@/components/Skeleton';
+import { ScreenHeader } from '@/components/ScreenHeader';
 import { cancelMedNotification } from '@/lib/notifications';
 import { fetchAllMedications, deactivateMedication } from '@/services/medications';
 import { formatTime } from '@/utils/date';
@@ -103,14 +105,11 @@ export default function MedicationsScreen() {
 
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
-      <View style={styles.header}>
-        <View>
-          <Text style={styles.title}>Remédios</Text>
-          <Text style={styles.subtitle}>
-            {meds.filter(m => m.active).length} ativo{meds.filter(m => m.active).length !== 1 ? 's' : ''} · {meds.length} cadastrado{meds.length !== 1 ? 's' : ''}
-          </Text>
-        </View>
-      </View>
+      <ScreenHeader
+        title="Remédios"
+        subtitle={`${meds.filter(m => m.active).length} ativo${meds.filter(m => m.active).length !== 1 ? 's' : ''} · ${meds.length} cadastrado${meds.length !== 1 ? 's' : ''}`}
+        style={styles.header}
+      />
 
       {loading ? (
         <ListSkeleton count={3} />
