@@ -2,6 +2,14 @@
   "name": "note-cat",
   "version": "1.0.0",
   "main": "index.ts",
+  "scripts": {
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "web": "expo start --web",
+    "build:apk": "eas build -p android --profile preview",
+    "update:ota": "eas update --branch preview"
+  },
   "dependencies": {
     "@expo-google-fonts/dm-sans": "^0.4.2",
     "@expo/vector-icons": "^15.0.2",
@@ -29,14 +37,6 @@
   "devDependencies": {
     "@types/react": "~19.2.2",
     "typescript": "~6.0.3"
-  },
-  "scripts": {
-    "start": "expo start",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
-    "web": "expo start --web",
-    "build:apk": "eas build -p android --profile preview",
-    "update:ota": "eas update --branch preview"
   },
   "private": true
 }
