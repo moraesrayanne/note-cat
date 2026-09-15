@@ -34,15 +34,6 @@ function SkeletonBlock({ width, height, borderRadius = 8, style }: {
 export function HomeSkeleton() {
   return (
     <View style={styles.container}>
-      {/* Header row */}
-      <View style={styles.headerRow}>
-        <SkeletonBlock width={52} height={52} borderRadius={26} />
-        <View style={{ gap: 8, flex: 1 }}>
-          <SkeletonBlock width={90} height={14} />
-          <SkeletonBlock width={200} height={22} />
-        </View>
-      </View>
-
       {/* Stats card */}
       <SkeletonBlock width="100%" height={140} borderRadius={20} style={{ marginBottom: 24 }} />
 

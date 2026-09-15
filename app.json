@@ -28,7 +28,14 @@
     "plugins": [
       "@react-native-community/datetimepicker",
       "expo-font",
-      "expo-status-bar"
+      "expo-status-bar",
+      [
+        "expo-notifications",
+        {
+          "sounds": []
+        }
+      ],
+      "expo-image"
     ],
     "extra": {
       "eas": {

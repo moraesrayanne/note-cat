@@ -8,8 +8,8 @@ import {
   Alert,
   KeyboardAvoidingView,
   Platform,
-  Image,
 } from 'react-native';
+import { Image } from 'expo-image';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAuth } from '../contexts/AuthContext';
 import { colors, fonts } from '../theme';
@@ -51,6 +51,9 @@ export default function LoginScreen() {
           <Image
             source={require('../../assets/cat-login.png')}
             style={styles.photoImg}
+            contentFit="cover"
+            transition={200}
+            placeholder={{ blurhash: 'LKO2?U%2Tw=w]~RBVZRi};RPxuwH' }}
           />
         </View>
         <Text style={styles.title}>Note Cat</Text>

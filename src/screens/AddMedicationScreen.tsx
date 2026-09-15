@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   Alert,
+  Switch,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -13,6 +14,7 @@ import { Feather, FontAwesome6 } from '@expo/vector-icons';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
 import { colors, fonts } from '../theme';
+import { scheduleMedNotification, cancelMedNotification } from '../lib/notifications';
 
 type Props = NativeStackScreenProps<any, 'AddMedication'>;
 
@@ -56,6 +58,7 @@ export default function AddMedicationScreen({ navigation, route }: Props) {
     if (editing?.time) return editing.time.substring(0, 5);
     return '';
   });
+  const [active, setActive] = useState(editing?.active ?? true);
   const [saving, setSaving] = useState(false);
 
   const canSave = name.trim() && dose.trim() && isValidTime(time);
@@ -75,17 +78,24 @@ export default function AddMedicationScreen({ navigation, route }: Props) {
       dose: dose.trim(),
       time: timeStr,
       user_id: user.id,
-      active: true,
+      active,
     };
 
     let error;
+    let savedMed;
     if (editing) {
-      ({ error } = await supabase
+      const result = await supabase
         .from('medications')
         .update(data)
-        .eq('id', editing.id));
+        .eq('id', editing.id)
+        .select()
+        .single();
+      error = result.error;
+      savedMed = result.data;
     } else {
-      ({ error } = await supabase.from('medications').insert(data));
+      const result = await supabase.from('medications').insert(data).select().single();
+      error = result.error;
+      savedMed = result.data;
     }
 
     setSaving(false);
@@ -93,6 +103,13 @@ export default function AddMedicationScreen({ navigation, route }: Props) {
     if (error) {
       Alert.alert('Erro', error.message);
     } else {
+      if (savedMed) {
+        if (active) {
+          scheduleMedNotification(savedMed);
+        } else {
+          cancelMedNotification(savedMed.id);
+        }
+      }
       navigation.goBack();
     }
   };
@@ -108,58 +125,80 @@ export default function AddMedicationScreen({ navigation, route }: Props) {
       </View>
 
       <View style={styles.formContent}>
-      <View style={styles.iconContainer}>
-        {editing ? <Feather name="edit-2" size={32} color={colors.primary} /> : <FontAwesome6 name="pills" size={28} color={colors.primary} />}
+        <View style={styles.iconContainer}>
+          {editing ? <Feather name="edit-2" size={32} color={colors.primary} /> : <FontAwesome6 name="pills" size={28} color={colors.primary} />}
+        </View>
+
+        <View style={styles.field}>
+          <Text style={styles.label}>Nome do remédio</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Ex: Prednisolona"
+            placeholderTextColor={colors.textMuted}
+            value={name}
+            onChangeText={setName}
+          />
+        </View>
+
+        <View style={styles.field}>
+          <Text style={styles.label}>Dose</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Ex: 5mg, 2ml, 1 comprimido"
+            placeholderTextColor={colors.textMuted}
+            value={dose}
+            onChangeText={setDose}
+          />
+        </View>
+
+        <View style={styles.field}>
+          <Text style={styles.label}>Horário</Text>
+          <TextInput
+            style={styles.timeInput}
+            placeholder="20:00"
+            placeholderTextColor={colors.textMuted}
+            value={time}
+            onChangeText={(text) => setTime(formatTimeInput(time, text))}
+            keyboardType="number-pad"
+            maxLength={5}
+          />
+        </View>
+
+        <View style={styles.switchRow}>
+          <View>
+            <Text style={styles.label}>Status</Text>
+            <Text style={styles.switchDescription}>
+              {active ? 'Aparece na tela Hoje' : 'Não aparece na tela Hoje'}
+            </Text>
+          </View>
+          <View style={styles.switchControl}>
+            <Text style={[styles.switchLabel, active ? styles.switchLabelActive : styles.switchLabelInactive]}>
+              {active ? 'Ativo' : 'Inativo'}
+            </Text>
+            <Switch
+              value={active}
+              onValueChange={setActive}
+              trackColor={{ false: '#E0D6D0', true: colors.primary }}
+              thumbColor="#FFF"
+            />
+          </View>
+        </View>
       </View>
 
-      <View style={styles.field}>
-        <Text style={styles.label}>Nome do remédio</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Ex: Prednisolona"
-          placeholderTextColor={colors.textMuted}
-          value={name}
-          onChangeText={setName}
-        />
-      </View>
+      <View style={styles.bottomButtons}>
+        <TouchableOpacity
+          style={[styles.saveButton, !canSave && styles.saveButtonDisabled]}
+          onPress={handleSave}
+          disabled={saving || !canSave}
+        >
+          <Text style={[styles.saveText, !canSave && styles.saveTextDisabled]}>
+            {saving ? 'Salvando...' : editing ? 'Salvar alterações' : 'Salvar remédio'}
+          </Text>
+        </TouchableOpacity>
 
-      <View style={styles.field}>
-        <Text style={styles.label}>Dose</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Ex: 5mg, 2ml, 1 comprimido"
-          placeholderTextColor={colors.textMuted}
-          value={dose}
-          onChangeText={setDose}
-        />
-      </View>
-
-      <View style={styles.field}>
-        <Text style={styles.label}>Horário</Text>
-        <TextInput
-          style={styles.timeInput}
-          placeholder="20:00"
-          placeholderTextColor={colors.textMuted}
-          value={time}
-          onChangeText={(text) => setTime(formatTimeInput(time, text))}
-          keyboardType="number-pad"
-          maxLength={5}
-        />
-      </View>
-
-      <TouchableOpacity
-        style={[styles.saveButton, !canSave && styles.saveButtonDisabled]}
-        onPress={handleSave}
-        disabled={saving || !canSave}
-      >
-        <Text style={[styles.saveText, !canSave && styles.saveTextDisabled]}>
-          {saving ? 'Salvando...' : editing ? 'Salvar alterações' : 'Salvar remédio'}
-        </Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity onPress={() => navigation.goBack()}>
-        <Text style={styles.cancelText}>Cancelar</Text>
-      </TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Text style={styles.cancelText}>Cancelar</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -197,7 +236,12 @@ const styles = StyleSheet.create({
     color: colors.text,
   },
   formContent: {
+    flex: 1,
     paddingHorizontal: 24,
+  },
+  bottomButtons: {
+    paddingHorizontal: 24,
+    paddingBottom: 32,
   },
   iconContainer: {
     width: 72,
@@ -232,6 +276,39 @@ const styles = StyleSheet.create({
     borderColor: colors.primaryBgInput,
     color: colors.text,
   },
+  switchRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 18,
+    backgroundColor: colors.cardBg,
+    borderRadius: 14,
+    padding: 14,
+    paddingHorizontal: 16,
+    borderWidth: 2,
+    borderColor: colors.primaryBgInput,
+  },
+  switchControl: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  switchLabel: {
+    fontSize: 13,
+    fontFamily: fonts.bold,
+  },
+  switchLabelActive: {
+    color: colors.primary,
+  },
+  switchLabelInactive: {
+    color: colors.textMuted,
+  },
+  switchDescription: {
+    fontSize: 12,
+    fontFamily: fonts.regular,
+    color: colors.textMuted,
+    marginTop: 2,
+  },
   timeInput: {
     backgroundColor: colors.background,
     borderRadius: 14,
@@ -249,7 +326,6 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     padding: 16,
     alignItems: 'center',
-    marginTop: 32,
     shadowColor: colors.primary,
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.3,

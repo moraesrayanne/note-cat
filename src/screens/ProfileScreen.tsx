@@ -6,8 +6,8 @@ import {
   TouchableOpacity,
   StyleSheet,
   Alert,
-  Image,
 } from 'react-native';
+import { Image } from 'expo-image';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
 import { supabase } from '../lib/supabase';
@@ -83,6 +83,9 @@ export default function ProfileScreen() {
           <Image
             source={require('../../assets/cat-icon.png')}
             style={styles.photoImg}
+            contentFit="cover"
+            transition={200}
+            placeholder={{ blurhash: 'LKO2?U%2Tw=w]~RBVZRi};RPxuwH' }}
           />
         </View>
       </View>

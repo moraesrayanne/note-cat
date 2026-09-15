@@ -8,8 +8,8 @@ import {
   RefreshControl,
   Animated,
   Alert,
-  Image,
 } from 'react-native';
+import { Image } from 'expo-image';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useFocusEffect } from '@react-navigation/native';
@@ -19,6 +19,7 @@ import { Medication, MedicationLog } from '../types';
 import { Feather } from '@expo/vector-icons';
 import { colors, fonts } from '../theme';
 import { HomeSkeleton } from '../components/Skeleton';
+import { syncAllNotifications } from '../lib/notifications';
 
 function getTodayDate(): string {
   const now = new Date();
@@ -107,6 +108,7 @@ export default function HomeScreen() {
 
     setMeds(todayMeds);
     setLoading(false);
+    syncAllNotifications(medications ?? []);
   }, [user]);
 
   useFocusEffect(
@@ -233,6 +235,23 @@ export default function HomeScreen() {
   if (loading) {
     return (
       <View style={[styles.container, { paddingTop: insets.top }]}>
+        <View style={styles.fixedHeader}>
+          <View style={styles.headerRow}>
+            <View style={styles.catPhoto}>
+              <Image
+                source={require('../../assets/cat-icon.png')}
+                style={styles.catPhotoImg}
+                contentFit="cover"
+                transition={200}
+                placeholder={{ blurhash: 'LKO2?U%2Tw=w]~RBVZRi};RPxuwH' }}
+              />
+            </View>
+            <View>
+              <Text style={styles.greeting}>{getGreeting()}!</Text>
+              <Text style={styles.title}>Remédios do {catName} 🐾</Text>
+            </View>
+          </View>
+        </View>
         <HomeSkeleton />
       </View>
     );
@@ -240,23 +259,29 @@ export default function HomeScreen() {
 
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
+      <View style={styles.fixedHeader}>
+        <View style={styles.headerRow}>
+          <View style={styles.catPhoto}>
+            <Image
+              source={require('../../assets/cat-icon.png')}
+              style={styles.catPhotoImg}
+              contentFit="cover"
+              transition={200}
+              placeholder={{ blurhash: 'LKO2?U%2Tw=w]~RBVZRi};RPxuwH' }}
+            />
+          </View>
+          <View>
+            <Text style={styles.greeting}>{getGreeting()}!</Text>
+            <Text style={styles.title}>Remédios do {catName} 🐾</Text>
+          </View>
+        </View>
+      </View>
+
       <FlatList
         data={[{ key: 'content' }]}
         renderItem={() => (
           <View>
-            {/* Header */}
-            <View style={styles.header}>
-              <View style={styles.headerRow}>
-                <View style={styles.catPhoto}>
-                  <Image source={require('../../assets/cat-icon.png')} style={styles.catPhotoImg} />
-                </View>
-                <View>
-                  <Text style={styles.greeting}>{getGreeting()}!</Text>
-                  <Text style={styles.title}>Remédios do {catName} 🐾</Text>
-                </View>
-              </View>
-
-              {/* Stats card */}
+            <View style={styles.statsWrapper}>
               <LinearGradient
                 colors={[colors.primary, colors.primaryLight]}
                 start={{ x: 0, y: 0 }}
@@ -278,7 +303,6 @@ export default function HomeScreen() {
               </LinearGradient>
             </View>
 
-            {/* Pending */}
             {pending.length > 0 && (
               <View style={styles.section}>
                 <Text style={styles.sectionLabel}>Pendentes</Text>
@@ -286,7 +310,6 @@ export default function HomeScreen() {
               </View>
             )}
 
-            {/* Taken */}
             {taken.length > 0 && (
               <View style={styles.section}>
                 <Text style={styles.sectionLabelDone}>Tomados</Text>
@@ -294,7 +317,6 @@ export default function HomeScreen() {
               </View>
             )}
 
-            {/* Empty state */}
             {meds.length === 0 && (
               <View style={styles.emptyContainer}>
                 <Feather name="inbox" size={40} color={colors.textMuted} />
@@ -315,15 +337,20 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
   },
-  header: {
-    padding: 24,
-    paddingBottom: 16,
+  fixedHeader: {
+    paddingHorizontal: 24,
+    paddingTop: 24,
+    paddingBottom: 12,
+    backgroundColor: colors.background,
   },
   headerRow: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 14,
-    marginBottom: 20,
+  },
+  statsWrapper: {
+    paddingHorizontal: 24,
+    paddingBottom: 16,
   },
   catPhoto: {
     width: 52,

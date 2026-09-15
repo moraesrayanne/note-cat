@@ -16,6 +16,7 @@ import { Medication } from '../types';
 import Svg, { Path } from 'react-native-svg';
 import { Feather, FontAwesome6 } from '@expo/vector-icons';
 import { colors, fonts } from '../theme';
+import { cancelMedNotification } from '../lib/notifications';
 import { ListSkeleton } from '../components/Skeleton';
 
 export default function MedicationsScreen() {
@@ -32,7 +33,7 @@ export default function MedicationsScreen() {
       .from('medications')
       .select('*')
       .eq('user_id', user.id)
-      .eq('active', true)
+      .order('active', { ascending: false })
       .order('time');
     setMeds(data ?? []);
     setLoading(false);
@@ -46,6 +47,7 @@ export default function MedicationsScreen() {
 
   const deleteMed = async (med: Medication) => {
     await supabase.from('medications').update({ active: false }).eq('id', med.id);
+    await cancelMedNotification(med.id);
     setConfirmDelete(null);
     loadMeds();
   };
@@ -54,17 +56,24 @@ export default function MedicationsScreen() {
 
   const renderItem = ({ item }: { item: Medication }) => (
     <TouchableOpacity
-      style={styles.card}
+      style={[styles.card, !item.active && styles.cardInactive]}
       onPress={() => navigation.navigate('AddMedication', { medication: item })}
       activeOpacity={0.7}
     >
-      <View style={styles.medIcon}>
-        <FontAwesome6 name="pills" size={18} color={colors.primary} />
+      <View style={[styles.medIcon, !item.active && styles.medIconInactive]}>
+        <FontAwesome6 name="pills" size={18} color={item.active ? colors.primary : colors.textMuted} />
       </View>
       <View style={styles.cardContent}>
-        <Text style={[styles.medName, !item.active && styles.textInactive]}>
-          {item.name}
-        </Text>
+        <View style={styles.nameRow}>
+          <Text style={[styles.medName, !item.active && styles.textInactive]}>
+            {item.name}
+          </Text>
+          <View style={[styles.statusTag, item.active ? styles.statusActive : styles.statusInactive]}>
+            <Text style={[styles.statusTagText, item.active ? styles.statusActiveText : styles.statusInactiveText]}>
+              {item.active ? 'ATIVO' : 'INATIVO'}
+            </Text>
+          </View>
+        </View>
         <Text style={styles.medDose}>
           {item.dose} · {formatTime(item.time)}
         </Text>
@@ -103,15 +112,9 @@ export default function MedicationsScreen() {
         <View>
           <Text style={styles.title}>Remédios</Text>
           <Text style={styles.subtitle}>
-            {meds.length} cadastrado{meds.length !== 1 ? 's' : ''}
+            {meds.filter(m => m.active).length} ativo{meds.filter(m => m.active).length !== 1 ? 's' : ''} · {meds.length} cadastrado{meds.length !== 1 ? 's' : ''}
           </Text>
         </View>
-        <TouchableOpacity
-          style={styles.addButton}
-          onPress={() => navigation.navigate('AddMedication', {})}
-        >
-          <Text style={styles.addButtonText}>+</Text>
-        </TouchableOpacity>
       </View>
 
       {loading ? (
@@ -158,25 +161,6 @@ const styles = StyleSheet.create({
     fontFamily: fonts.regular,
     marginTop: 4,
   },
-  addButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 12,
-    backgroundColor: colors.primary,
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: colors.primary,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 12,
-    elevation: 4,
-  },
-  addButtonText: {
-    color: '#FFF',
-    fontSize: 24,
-    fontWeight: '300',
-    marginTop: -2,
-  },
   list: {
     paddingHorizontal: 24,
     paddingBottom: 24,
@@ -203,17 +187,50 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  cardInactive: {
+    opacity: 0.65,
+  },
+  medIconInactive: {
+    backgroundColor: '#F0EBE8',
+  },
   cardContent: {
     flex: 1,
+  },
+  nameRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
   },
   medName: {
     fontSize: 15,
     fontFamily: fonts.semibold,
     color: colors.text,
+    flexShrink: 1,
   },
   textInactive: {
-    textDecorationLine: 'line-through',
-    opacity: 0.5,
+    color: colors.textMuted,
+  },
+  statusTag: {
+    paddingHorizontal: 7,
+    paddingVertical: 2,
+    borderRadius: 6,
+  },
+  statusActive: {
+    backgroundColor: colors.successBg,
+  },
+  statusInactive: {
+    backgroundColor: '#F0EBE8',
+  },
+  statusTagText: {
+    fontSize: 10,
+    fontFamily: fonts.bold,
+    letterSpacing: 0.5,
+  },
+  statusActiveText: {
+    color: colors.success,
+  },
+  statusInactiveText: {
+    color: colors.textMuted,
   },
   medDose: {
     fontSize: 12,
