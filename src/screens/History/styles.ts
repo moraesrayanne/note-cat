@@ -13,6 +13,7 @@ export const styles = StyleSheet.create({
   list: {
     paddingHorizontal: 24,
     paddingBottom: 100,
+    paddingTop: 4,
   },
   sectionHeader: {
     flexDirection: 'row',
@@ -73,15 +74,22 @@ export const styles = StyleSheet.create({
     fontFamily: fonts.semibold,
     color: colors.primary,
   },
-  loadMore: {
-    padding: 16,
+  dayHeader: {
+    flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 8,
+    justifyContent: 'space-between',
+    marginBottom: 12,
+    marginTop: 16,
   },
-  loadMoreText: {
-    color: colors.primary,
-    fontFamily: fonts.semibold,
+  dayTitle: {
     fontSize: 14,
+    fontFamily: fonts.bold,
+    color: colors.primary,
+  },
+  dayCount: {
+    fontSize: 13,
+    fontFamily: fonts.semibold,
+    color: colors.primary,
   },
   emptyContainer: {
     flex: 1,

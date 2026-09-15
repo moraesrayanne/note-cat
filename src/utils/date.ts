@@ -83,3 +83,12 @@ export function formatTimeInput(prev: string, raw: string): string {
 export function isValidTime(value: string): boolean {
   return /^([01]\d|2[0-3]):[0-5]\d$/.test(value);
 }
+
+export function calcMaxHistoryDays(createdAt: string, bufferDays = 7): number {
+  const created = new Date(createdAt);
+  const minDate = new Date(created);
+  minDate.setDate(created.getDate() - bufferDays);
+  const today = new Date();
+  const diffMs = today.getTime() - minDate.getTime();
+  return Math.max(bufferDays + 1, Math.floor(diffMs / 86_400_000) + 1);
+}
