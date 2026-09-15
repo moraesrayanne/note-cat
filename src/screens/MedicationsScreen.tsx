@@ -14,6 +14,7 @@ import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
 import { Medication } from '../types';
 import Svg, { Path } from 'react-native-svg';
+import { Feather, FontAwesome6 } from '@expo/vector-icons';
 import { colors, fonts } from '../theme';
 import { ListSkeleton } from '../components/Skeleton';
 
@@ -58,7 +59,7 @@ export default function MedicationsScreen() {
       activeOpacity={0.7}
     >
       <View style={styles.medIcon}>
-        <Text style={styles.medIconText}>💊</Text>
+        <FontAwesome6 name="pills" size={18} color={colors.primary} />
       </View>
       <View style={styles.cardContent}>
         <Text style={[styles.medName, !item.active && styles.textInactive]}>
@@ -123,7 +124,7 @@ export default function MedicationsScreen() {
           contentContainerStyle={styles.list}
           ListEmptyComponent={
             <View style={styles.emptyContainer}>
-              <Text style={styles.emptyEmoji}>💊</Text>
+              <Feather name="inbox" size={40} color={colors.textMuted} />
               <Text style={styles.emptyText}>Sem remédios</Text>
               <Text style={styles.emptySubtext}>Toque no + para adicionar</Text>
             </View>
@@ -202,9 +203,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  medIconText: {
-    fontSize: 20,
-  },
   cardContent: {
     flex: 1,
   },
@@ -263,10 +261,6 @@ const styles = StyleSheet.create({
   emptyContainer: {
     alignItems: 'center',
     marginTop: 80,
-  },
-  emptyEmoji: {
-    fontSize: 40,
-    marginBottom: 12,
   },
   emptyText: {
     fontSize: 15,
