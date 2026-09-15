@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import {
   View,
   Text,
@@ -6,36 +6,22 @@ import {
   TouchableOpacity,
   RefreshControl,
   Animated,
-  Alert,
 } from 'react-native';
 import { Image } from 'expo-image';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useFocusEffect } from '@react-navigation/native';
 import { Feather } from '@expo/vector-icons';
 
 import { useAuth } from '@/contexts/AuthContext';
-import { Medication, MedicationLog } from '@/types';
 import { colors } from '@/theme';
 import { HomeSkeleton } from '@/components/Skeleton';
-import { syncAllNotifications } from '@/lib/notifications';
-import {
-  fetchActiveMedications,
-  fetchTodayLogs,
-  createMedicationLog,
-  deleteMedicationLog,
-} from '@/services/medications';
-import { getTodayDate, formatTime, getGreeting, getDateStr } from '@/utils/date';
+import { formatTime, getGreeting, getDateStr } from '@/utils/date';
+import { TodayMed, useTodayMeds } from '@/hooks/useTodayMeds';
 import { styles } from './styles';
 
 function getMedIcon(time: string): keyof typeof Feather.glyphMap {
   const hour = parseInt(time.substring(0, 2), 10);
   return hour < 18 ? 'sun' : 'moon';
-}
-
-interface TodayMed {
-  medication: Medication;
-  log: MedicationLog | null;
 }
 
 function AnimatedCheckbox({ checked }: { checked: boolean }) {
@@ -62,99 +48,9 @@ function AnimatedCheckbox({ checked }: { checked: boolean }) {
 }
 
 export default function HomeScreen() {
-  const { user, catName } = useAuth();
+  const { catName } = useAuth();
   const insets = useSafeAreaInsets();
-  const [meds, setMeds] = useState<TodayMed[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
-  const [togglingIds, setTogglingIds] = useState<Set<string>>(new Set());
-
-  const loadToday = useCallback(async () => {
-    if (!user) return;
-    const today = getTodayDate();
-
-    const { data: medications } = await fetchActiveMedications(user.id);
-    const { data: logs } = await fetchTodayLogs(user.id, today);
-
-    const todayMeds: TodayMed[] = medications.map((med) => ({
-      medication: med,
-      log: logs.find((l) => l.medication_id === med.id) ?? null,
-    }));
-
-    setMeds(todayMeds);
-    setLoading(false);
-    syncAllNotifications(medications);
-  }, [user]);
-
-  useFocusEffect(
-    useCallback(() => {
-      loadToday();
-    }, [loadToday])
-  );
-
-  const toggleMed = async (item: TodayMed) => {
-    if (!user) return;
-    const medId = item.medication.id;
-
-    if (togglingIds.has(medId)) return;
-
-    const today = getTodayDate();
-    const wasTaken = !!item.log;
-
-    setTogglingIds(prev => new Set(prev).add(medId));
-
-    setMeds(prev => prev.map(m => {
-      if (m.medication.id !== medId) return m;
-      if (wasTaken) {
-        return { ...m, log: null };
-      }
-      return {
-        ...m,
-        log: {
-          id: 'optimistic-' + medId,
-          medication_id: medId,
-          user_id: user.id,
-          date: today,
-          taken_at: new Date().toISOString(),
-        } as MedicationLog,
-      };
-    }));
-
-    try {
-      if (wasTaken) {
-        const { error } = await deleteMedicationLog(item.log!.id);
-        if (error) throw error;
-      } else {
-        const { error } = await createMedicationLog({
-          medication_id: medId,
-          user_id: user.id,
-          date: today,
-          taken_at: new Date().toISOString(),
-        });
-        if (error) throw error;
-      }
-      await loadToday();
-    } catch {
-      await loadToday();
-      Alert.alert('Erro', 'Não foi possível atualizar. Tente novamente.');
-    }
-
-    setTogglingIds(prev => {
-      const next = new Set(prev);
-      next.delete(medId);
-      return next;
-    });
-  };
-
-  const onRefresh = async () => {
-    setRefreshing(true);
-    await loadToday();
-    setRefreshing(false);
-  };
-
-  const pending = meds.filter((m) => !m.log);
-  const taken = meds.filter((m) => m.log);
-  const pct = meds.length > 0 ? Math.round((taken.length / meds.length) * 100) : 0;
+  const { meds, loading, refreshing, toggleMed, onRefresh, pending, taken, pct } = useTodayMeds();
 
   const renderPendingItem = (item: TodayMed) => (
     <TouchableOpacity
@@ -207,26 +103,30 @@ export default function HomeScreen() {
     );
   };
 
+  const header = (
+    <View style={styles.fixedHeader}>
+      <View style={styles.headerRow}>
+        <View style={styles.catPhoto}>
+          <Image
+            source={require('../../../assets/cat-icon.png')}
+            style={styles.catPhotoImg}
+            contentFit="cover"
+            transition={200}
+            placeholder={{ blurhash: 'LKO2?U%2Tw=w]~RBVZRi};RPxuwH' }}
+          />
+        </View>
+        <View>
+          <Text style={styles.greeting}>{getGreeting()}!</Text>
+          <Text style={styles.title}>Remédios do {catName} 🐾</Text>
+        </View>
+      </View>
+    </View>
+  );
+
   if (loading) {
     return (
       <View style={[styles.container, { paddingTop: insets.top }]}>
-        <View style={styles.fixedHeader}>
-          <View style={styles.headerRow}>
-            <View style={styles.catPhoto}>
-              <Image
-                source={require('../../../assets/cat-icon.png')}
-                style={styles.catPhotoImg}
-                contentFit="cover"
-                transition={200}
-                placeholder={{ blurhash: 'LKO2?U%2Tw=w]~RBVZRi};RPxuwH' }}
-              />
-            </View>
-            <View>
-              <Text style={styles.greeting}>{getGreeting()}!</Text>
-              <Text style={styles.title}>Remédios do {catName} 🐾</Text>
-            </View>
-          </View>
-        </View>
+        {header}
         <HomeSkeleton />
       </View>
     );
@@ -234,23 +134,7 @@ export default function HomeScreen() {
 
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
-      <View style={styles.fixedHeader}>
-        <View style={styles.headerRow}>
-          <View style={styles.catPhoto}>
-            <Image
-              source={require('../../../assets/cat-icon.png')}
-              style={styles.catPhotoImg}
-              contentFit="cover"
-              transition={200}
-              placeholder={{ blurhash: 'LKO2?U%2Tw=w]~RBVZRi};RPxuwH' }}
-            />
-          </View>
-          <View>
-            <Text style={styles.greeting}>{getGreeting()}!</Text>
-            <Text style={styles.title}>Remédios do {catName} 🐾</Text>
-          </View>
-        </View>
-      </View>
+      {header}
 
       <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <View style={styles.statsWrapper}>
