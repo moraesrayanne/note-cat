@@ -7,9 +7,9 @@ interface IconProps {
   filled?: boolean;
 }
 
-export function HomeIcon({ color, size = 22, filled }: IconProps) {
+export function HomeIcon({ color, size = 22 }: IconProps) {
   return (
-    <Svg width={size} height={size} viewBox="0 0 24 24" fill={filled ? color : 'none'} stroke={color} strokeWidth={2} strokeLinecap="round">
+    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={2} strokeLinecap="round">
       <Path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
     </Svg>
   );
