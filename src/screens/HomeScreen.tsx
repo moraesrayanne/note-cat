@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import {
   View,
   Text,
@@ -6,6 +6,9 @@ import {
   TouchableOpacity,
   StyleSheet,
   RefreshControl,
+  Animated,
+  Alert,
+  Image,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -13,6 +16,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
 import { Medication, MedicationLog } from '../types';
+import { Feather } from '@expo/vector-icons';
 import { colors, fonts } from '../theme';
 import { HomeSkeleton } from '../components/Skeleton';
 
@@ -38,19 +42,46 @@ function getDateStr(): string {
   return `${now.getDate()} de ${months[now.getMonth()]}`;
 }
 
-const MED_ICONS = ['💊', '💉', '🩹', '💊', '🧴', '💧'];
+function getMedIcon(time: string): keyof typeof Feather.glyphMap {
+  const hour = parseInt(time.substring(0, 2), 10);
+  return hour < 18 ? 'sun' : 'moon';
+}
 
 interface TodayMed {
   medication: Medication;
   log: MedicationLog | null;
 }
 
+function AnimatedCheckbox({ checked }: { checked: boolean }) {
+  const scale = useRef(new Animated.Value(1)).current;
+  const prevChecked = useRef(checked);
+
+  if (checked !== prevChecked.current) {
+    prevChecked.current = checked;
+    Animated.sequence([
+      Animated.timing(scale, { toValue: 1.3, duration: 120, useNativeDriver: true }),
+      Animated.spring(scale, { toValue: 1, friction: 4, useNativeDriver: true }),
+    ]).start();
+  }
+
+  if (checked) {
+    return (
+      <Animated.View style={[styles.checkboxChecked, { transform: [{ scale }] }]}>
+        <Feather name="check" size={14} color="#FFF" />
+      </Animated.View>
+    );
+  }
+
+  return <Animated.View style={[styles.checkbox, { transform: [{ scale }] }]} />;
+}
+
 export default function HomeScreen() {
-  const { user } = useAuth();
+  const { user, catName } = useAuth();
   const insets = useSafeAreaInsets();
   const [meds, setMeds] = useState<TodayMed[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [togglingIds, setTogglingIds] = useState<Set<string>>(new Set());
 
   const loadToday = useCallback(async () => {
     if (!user) return;
@@ -86,19 +117,56 @@ export default function HomeScreen() {
 
   const toggleMed = async (item: TodayMed) => {
     if (!user) return;
-    const today = getTodayDate();
+    const medId = item.medication.id;
 
-    if (item.log) {
-      await supabase.from('medication_logs').delete().eq('id', item.log.id);
-    } else {
-      await supabase.from('medication_logs').insert({
-        medication_id: item.medication.id,
-        user_id: user.id,
-        date: today,
-        taken_at: new Date().toISOString(),
-      });
+    if (togglingIds.has(medId)) return;
+
+    const today = getTodayDate();
+    const wasTaken = !!item.log;
+
+    setTogglingIds(prev => new Set(prev).add(medId));
+
+    setMeds(prev => prev.map(m => {
+      if (m.medication.id !== medId) return m;
+      if (wasTaken) {
+        return { ...m, log: null };
+      }
+      return {
+        ...m,
+        log: {
+          id: 'optimistic-' + medId,
+          medication_id: medId,
+          user_id: user.id,
+          date: today,
+          taken_at: new Date().toISOString(),
+        } as MedicationLog,
+      };
+    }));
+
+    try {
+      if (wasTaken) {
+        const { error } = await supabase.from('medication_logs').delete().eq('id', item.log!.id);
+        if (error) throw error;
+      } else {
+        const { error } = await supabase.from('medication_logs').insert({
+          medication_id: medId,
+          user_id: user.id,
+          date: today,
+          taken_at: new Date().toISOString(),
+        });
+        if (error) throw error;
+      }
+      await loadToday();
+    } catch {
+      await loadToday();
+      Alert.alert('Erro', 'Não foi possível atualizar. Tente novamente.');
     }
-    loadToday();
+
+    setTogglingIds(prev => {
+      const next = new Set(prev);
+      next.delete(medId);
+      return next;
+    });
   };
 
   const onRefresh = async () => {
@@ -119,7 +187,7 @@ export default function HomeScreen() {
       activeOpacity={0.7}
     >
       <View style={styles.medIcon}>
-        <Text style={styles.medIconText}>{MED_ICONS[index % MED_ICONS.length]}</Text>
+        <Feather name={getMedIcon(item.medication.time)} size={20} color={colors.primary} />
       </View>
       <View style={styles.medContent}>
         <Text style={styles.medName}>{item.medication.name}</Text>
@@ -127,7 +195,7 @@ export default function HomeScreen() {
           {item.medication.dose} · {formatTime(item.medication.time)}
         </Text>
       </View>
-      <View style={styles.checkbox} />
+      <AnimatedCheckbox checked={false} />
     </TouchableOpacity>
   );
 
@@ -143,17 +211,21 @@ export default function HomeScreen() {
         activeOpacity={0.7}
       >
         <View style={[styles.medIcon, styles.medIconTaken]}>
-          <Text style={styles.medIconText}>🩹</Text>
+          <Feather name="check-circle" size={20} color={colors.success} />
         </View>
         <View style={styles.medContent}>
           <Text style={[styles.medName, styles.medNameTaken]}>{item.medication.name}</Text>
-          <Text style={styles.medDose}>
-            {item.medication.dose} · {formatTime(item.medication.time)} — tomado às {takenTime}
-          </Text>
+          <View style={styles.doseRow}>
+            <Text style={styles.medDose}>
+              {item.medication.dose} · {formatTime(item.medication.time)}
+            </Text>
+            <View style={styles.takenTag}>
+              <Feather name="check" size={10} color={colors.success} />
+              <Text style={styles.takenTagText}>tomado às {takenTime}</Text>
+            </View>
+          </View>
         </View>
-        <View style={styles.checkboxChecked}>
-          <Text style={styles.checkmark}>✓</Text>
-        </View>
+        <AnimatedCheckbox checked={true} />
       </TouchableOpacity>
     );
   };
@@ -176,11 +248,11 @@ export default function HomeScreen() {
             <View style={styles.header}>
               <View style={styles.headerRow}>
                 <View style={styles.catPhoto}>
-                  <Text style={styles.catPhotoText}>🐱</Text>
+                  <Image source={require('../../assets/cat-icon.png')} style={styles.catPhotoImg} />
                 </View>
                 <View>
                   <Text style={styles.greeting}>{getGreeting()}!</Text>
-                  <Text style={styles.title}>Remédios do Baden 🐾</Text>
+                  <Text style={styles.title}>Remédios do {catName} 🐾</Text>
                 </View>
               </View>
 
@@ -217,7 +289,7 @@ export default function HomeScreen() {
             {/* Taken */}
             {taken.length > 0 && (
               <View style={styles.section}>
-                <Text style={styles.sectionLabelDone}>Tomados ✓</Text>
+                <Text style={styles.sectionLabelDone}>Tomados</Text>
                 {taken.map(renderTakenItem)}
               </View>
             )}
@@ -225,7 +297,7 @@ export default function HomeScreen() {
             {/* Empty state */}
             {meds.length === 0 && (
               <View style={styles.emptyContainer}>
-                <Text style={styles.emptyEmoji}>🐱</Text>
+                <Feather name="inbox" size={40} color={colors.textMuted} />
                 <Text style={styles.emptyText}>Nenhum remédio cadastrado</Text>
                 <Text style={styles.emptySubtext}>Vá em Remédios para adicionar</Text>
               </View>
@@ -263,8 +335,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: colors.primaryBg,
   },
-  catPhotoText: {
-    fontSize: 24,
+  catPhotoImg: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
   },
   greeting: {
     fontSize: 14,
@@ -379,9 +453,6 @@ const styles = StyleSheet.create({
   medIconTaken: {
     backgroundColor: colors.successBg,
   },
-  medIconText: {
-    fontSize: 20,
-  },
   medContent: {
     flex: 1,
   },
@@ -399,6 +470,26 @@ const styles = StyleSheet.create({
     fontFamily: fonts.regular,
     marginTop: 2,
   },
+  doseRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 2,
+    gap: 6,
+  },
+  takenTag: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: colors.successBg,
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 6,
+    gap: 3,
+  },
+  takenTagText: {
+    fontSize: 11,
+    fontFamily: fonts.medium,
+    color: colors.success,
+  },
   checkbox: {
     width: 28,
     height: 28,
@@ -414,18 +505,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  checkmark: {
-    color: '#FFF',
-    fontSize: 14,
-    fontWeight: 'bold',
-  },
   emptyContainer: {
     alignItems: 'center',
     padding: 40,
-  },
-  emptyEmoji: {
-    fontSize: 40,
-    marginBottom: 12,
   },
   emptyText: {
     fontSize: 15,
