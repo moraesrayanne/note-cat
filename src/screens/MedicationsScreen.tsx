@@ -32,6 +32,7 @@ export default function MedicationsScreen() {
       .from('medications')
       .select('*')
       .eq('user_id', user.id)
+      .eq('active', true)
       .order('time');
     setMeds(data ?? []);
     setLoading(false);
@@ -44,8 +45,7 @@ export default function MedicationsScreen() {
   );
 
   const deleteMed = async (med: Medication) => {
-    await supabase.from('medication_logs').delete().eq('medication_id', med.id);
-    await supabase.from('medications').delete().eq('id', med.id);
+    await supabase.from('medications').update({ active: false }).eq('id', med.id);
     setConfirmDelete(null);
     loadMeds();
   };
