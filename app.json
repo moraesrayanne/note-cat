@@ -3,6 +3,7 @@
     "name": "Note Cat",
     "slug": "note-cat",
     "version": "1.0.0",
+    "runtimeVersion": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -21,10 +22,19 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
+    "updates": {
+      "url": "https://u.expo.dev/9b9ff518-2e2b-484a-96d8-0c34a06a5ff1"
+    },
     "plugins": [
       "@react-native-community/datetimepicker",
       "expo-font",
       "expo-status-bar"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "9b9ff518-2e2b-484a-96d8-0c34a06a5ff1"
+      }
+    },
+    "owner": "moraesrayanne94"
   }
 }
