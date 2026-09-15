@@ -1,8 +1,6 @@
 import React from 'react';
 import {
   ActivityIndicator,
-  Keyboard,
-  Pressable,
   View,
   TouchableOpacity,
   StyleSheet,
@@ -224,16 +222,10 @@ export default function App() {
 
   return (
     <SafeAreaProvider>
-      <Pressable
-        style={{ flex: 1 }}
-        onPress={Keyboard.dismiss}
-        accessible={false}
-      >
-        <AuthProvider>
-          <StatusBar style='dark' />
-          <AppContent />
-        </AuthProvider>
-      </Pressable>
+      <AuthProvider>
+        <StatusBar style='dark' />
+        <AppContent />
+      </AuthProvider>
     </SafeAreaProvider>
   );
 }

@@ -134,6 +134,7 @@ export default function HistoryScreen() {
         </View>
       ) : (
         <SectionList
+          style={{ flex: 1 }}
           sections={sections}
           keyExtractor={(item) => item.id}
           renderItem={renderItem}
@@ -175,7 +176,7 @@ const styles = StyleSheet.create({
   },
   list: {
     paddingHorizontal: 24,
-    paddingBottom: 24,
+    paddingBottom: 100,
   },
   sectionHeader: {
     flexDirection: 'row',

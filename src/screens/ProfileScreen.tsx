@@ -233,15 +233,13 @@ const styles = StyleSheet.create({
     fontFamily: fonts.bold,
   },
   logoutButton: {
-    backgroundColor: colors.cardBg,
+    backgroundColor: colors.primary,
     borderRadius: 12,
     padding: 16,
     alignItems: 'center',
-    borderWidth: 1,
-    borderColor: colors.primary,
   },
   logoutText: {
-    color: colors.primary,
+    color: '#FFF',
     fontSize: 16,
     fontFamily: fonts.semibold,
   },
