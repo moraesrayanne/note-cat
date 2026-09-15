@@ -12,9 +12,13 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Feather } from '@expo/vector-icons';
 
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+
 import { useProfile } from '@/contexts/ProfileContext';
 import { catIcon, CAT_ICON_BLURHASH } from '@/assets';
 import { colors } from '@/theme';
+import { RootStackParamList } from '@/navigation/types';
 import { HomeSkeleton } from '@/components/Skeleton';
 import { formatTime, getGreeting, getDateStr } from '@/utils/date';
 import { TodayMed, useTodayMeds } from '@/hooks/useTodayMeds';
@@ -52,6 +56,7 @@ function AnimatedCheckbox({ checked }: { checked: boolean }) {
 export default function HomeScreen() {
   const { catName } = useProfile();
   const insets = useSafeAreaInsets();
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const { meds, loading, refreshing, toggleMed, onRefresh, pending, taken, pct } = useTodayMeds();
 
   const renderPendingItem = (item: TodayMed) => (
@@ -162,7 +167,7 @@ export default function HomeScreen() {
         </View>
 
         <View style={styles.diaryWrapper}>
-          <DiaryBanner catName={catName} />
+          <DiaryBanner catName={catName} onPress={() => navigation.navigate('Diary')} />
         </View>
 
         {pending.length > 0 && (

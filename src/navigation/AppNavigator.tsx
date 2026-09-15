@@ -18,6 +18,8 @@ import MedicationsScreen from '@/screens/Medications';
 import AddMedicationScreen from '@/screens/AddMedication';
 import HistoryScreen from '@/screens/History';
 import ProfileScreen from '@/screens/Profile';
+import DiaryScreen from '@/screens/Diary';
+import AddDiaryEntryScreen from '@/screens/AddDiaryEntry';
 
 const Tab = createBottomTabNavigator<TabParamList>();
 const RootStack = createNativeStackNavigator<RootStackParamList>();
@@ -125,6 +127,14 @@ export default function AppNavigator() {
         <RootStack.Screen
           name='AddMedication'
           component={AddMedicationScreen}
+        />
+        <RootStack.Screen
+          name='Diary'
+          component={DiaryScreen}
+        />
+        <RootStack.Screen
+          name='AddDiaryEntry'
+          component={AddDiaryEntryScreen}
         />
       </RootStack.Navigator>
     </NavigationContainer>

@@ -28,38 +28,29 @@ export const styles = StyleSheet.create({
     fontWeight: '300',
     marginTop: -2,
   },
-  headerTitle: {
+  headerTexts: {
     flex: 1,
+  },
+  headerTitle: {
     fontSize: 20,
     fontFamily: fonts.bold,
     color: colors.text,
+    lineHeight: 24,
+  },
+  headerSubtitle: {
+    fontSize: 13,
+    fontFamily: fonts.regular,
+    color: colors.textMuted,
   },
   headerSpacer: {
     width: 40,
   },
   scrollContent: {
-    flexGrow: 1,
     paddingHorizontal: 24,
-  },
-  formContent: {
-    flex: 1,
-  },
-  bottomButtons: {
-    marginTop: 8,
-  },
-  iconContainer: {
-    width: 72,
-    height: 72,
-    borderRadius: 20,
-    backgroundColor: colors.primaryBgLight,
-    justifyContent: 'center',
-    alignItems: 'center',
-    alignSelf: 'center',
-    marginBottom: 28,
-    marginTop: 8,
+    paddingTop: 20,
   },
   field: {
-    marginBottom: 18,
+    marginBottom: 20,
   },
   label: {
     fontSize: 12,
@@ -67,63 +58,80 @@ export const styles = StyleSheet.create({
     color: colors.primary,
     textTransform: 'uppercase',
     letterSpacing: 0.8,
-    marginBottom: 8,
+    marginBottom: 10,
   },
   input: {
     backgroundColor: colors.cardBg,
     borderRadius: 14,
     padding: 14,
     paddingHorizontal: 16,
-    fontSize: 16,
+    fontSize: 15,
     fontFamily: fonts.regular,
     borderWidth: 2,
     borderColor: colors.primaryBgInput,
     color: colors.text,
   },
-  switchRow: {
+  notesInput: {
+    minHeight: 90,
+    paddingTop: 14,
+  },
+  toggleRow: {
     flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: 18,
-    backgroundColor: colors.cardBg,
+    gap: 10,
+  },
+  toggleButton: {
+    flex: 1,
+    paddingVertical: 13,
     borderRadius: 14,
-    padding: 14,
-    paddingHorizontal: 16,
     borderWidth: 2,
     borderColor: colors.primaryBgInput,
-  },
-  switchControl: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  switchLabel: {
-    fontSize: 13,
-    fontFamily: fonts.bold,
-  },
-  switchLabelActive: {
-    color: colors.primary,
-  },
-  switchLabelInactive: {
-    color: colors.textMuted,
-  },
-  switchDescription: {
-    fontSize: 12,
-    fontFamily: fonts.regular,
-    color: colors.textMuted,
-    marginTop: 2,
-  },
-  timeInput: {
     backgroundColor: colors.cardBg,
-    borderRadius: 14,
-    padding: 14,
-    fontSize: 24,
+    alignItems: 'center',
+  },
+  toggleButtonActive: {
+    borderColor: colors.primary,
+    backgroundColor: colors.primaryBg,
+  },
+  toggleButtonNo: {
+    borderColor: '#E57373',
+    backgroundColor: '#FFF5F5',
+  },
+  toggleText: {
+    fontSize: 15,
     fontFamily: fonts.semibold,
+    color: colors.textMuted,
+  },
+  toggleTextActive: {
+    color: colors.primary,
+  },
+  toggleTextNo: {
+    color: '#E57373',
+  },
+  emojiRow: {
+    flexDirection: 'row',
+    gap: 10,
+    justifyContent: 'space-between',
+  },
+  emojiButton: {
+    flex: 1,
+    aspectRatio: 1,
+    maxWidth: 56,
+    borderRadius: 14,
+    backgroundColor: colors.cardBg,
     borderWidth: 2,
     borderColor: colors.primaryBgInput,
-    color: colors.primary,
-    textAlign: 'center',
-    letterSpacing: 4,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  emojiButtonSelected: {
+    borderColor: colors.primary,
+    backgroundColor: colors.primaryBg,
+  },
+  emojiText: {
+    fontSize: 26,
+  },
+  bottomButtons: {
+    marginTop: 8,
   },
   saveButton: {
     backgroundColor: colors.primary,
@@ -152,8 +160,18 @@ export const styles = StyleSheet.create({
   cancelText: {
     color: colors.textMuted,
     textAlign: 'center',
-    marginTop: 16,
+    marginTop: 14,
     fontSize: 14,
     fontFamily: fonts.medium,
+  },
+  deleteText: {
+    color: '#E57373',
+    textAlign: 'center',
+    marginTop: 10,
+    fontSize: 14,
+    fontFamily: fonts.medium,
+  },
+  deleteTextDisabled: {
+    color: colors.textMuted,
   },
 });

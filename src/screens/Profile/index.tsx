@@ -4,7 +4,9 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   Alert,
+  Keyboard,
 } from 'react-native';
 import { Image } from 'expo-image';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -58,6 +60,7 @@ export default function ProfileScreen() {
   };
 
   return (
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
     <View style={[styles.container, { paddingTop: insets.top }]}>
       <ScreenHeader
         title="Perfil"
@@ -114,5 +117,6 @@ export default function ProfileScreen() {
 
       <Text style={styles.footer}>Note Cat v1.0</Text>
     </View>
+    </TouchableWithoutFeedback>
   );
 }
