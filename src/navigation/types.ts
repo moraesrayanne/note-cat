@@ -1,4 +1,4 @@
-import { Medication } from '../types';
+import { Medication } from '@/types';
 
 export type RootStackParamList = {
   Tabs: undefined;

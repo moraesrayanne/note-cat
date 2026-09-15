@@ -1,5 +1,5 @@
-import { supabase } from '../lib/supabase';
-import { Medication, MedicationLog } from '../types';
+import { supabase } from '@/lib/supabase';
+import { Medication, MedicationLog } from '@/types';
 
 export async function fetchActiveMedications(userId: string) {
   const { data, error } = await supabase

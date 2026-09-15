@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { View, Animated } from 'react-native';
-import { colors } from '../../theme';
+import { colors } from '@/theme';
 import { styles } from './styles';
 
 function SkeletonBlock({ width, height, borderRadius = 8, style }: {

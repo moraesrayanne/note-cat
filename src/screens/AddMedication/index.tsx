@@ -11,12 +11,12 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Feather, FontAwesome6 } from '@expo/vector-icons';
 
-import { useAuth } from '../../contexts/AuthContext';
-import { colors } from '../../theme';
-import { scheduleMedNotification, cancelMedNotification } from '../../lib/notifications';
-import { saveMedication } from '../../services/medications';
-import { formatTimeInput, isValidTime } from '../../utils/date';
-import { RootStackParamList } from '../../navigation/types';
+import { useAuth } from '@/contexts/AuthContext';
+import { colors } from '@/theme';
+import { scheduleMedNotification, cancelMedNotification } from '@/lib/notifications';
+import { saveMedication } from '@/services/medications';
+import { formatTimeInput, isValidTime } from '@/utils/date';
+import { RootStackParamList } from '@/navigation/types';
 import { styles } from './styles';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'AddMedication'>;

@@ -11,14 +11,14 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import Svg, { Path } from 'react-native-svg';
 import { Feather, FontAwesome6 } from '@expo/vector-icons';
 
-import { useAuth } from '../../contexts/AuthContext';
-import { Medication } from '../../types';
-import { colors } from '../../theme';
-import { ListSkeleton } from '../../components/Skeleton';
-import { cancelMedNotification } from '../../lib/notifications';
-import { fetchAllMedications, deactivateMedication } from '../../services/medications';
-import { formatTime } from '../../utils/date';
-import { RootStackParamList } from '../../navigation/types';
+import { useAuth } from '@/contexts/AuthContext';
+import { Medication } from '@/types';
+import { colors } from '@/theme';
+import { ListSkeleton } from '@/components/Skeleton';
+import { cancelMedNotification } from '@/lib/notifications';
+import { fetchAllMedications, deactivateMedication } from '@/services/medications';
+import { formatTime } from '@/utils/date';
+import { RootStackParamList } from '@/navigation/types';
 import { styles } from './styles';
 
 export default function MedicationsScreen() {

@@ -14,18 +14,18 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useFocusEffect } from '@react-navigation/native';
 import { Feather } from '@expo/vector-icons';
 
-import { useAuth } from '../../contexts/AuthContext';
-import { Medication, MedicationLog } from '../../types';
-import { colors } from '../../theme';
-import { HomeSkeleton } from '../../components/Skeleton';
-import { syncAllNotifications } from '../../lib/notifications';
+import { useAuth } from '@/contexts/AuthContext';
+import { Medication, MedicationLog } from '@/types';
+import { colors } from '@/theme';
+import { HomeSkeleton } from '@/components/Skeleton';
+import { syncAllNotifications } from '@/lib/notifications';
 import {
   fetchActiveMedications,
   fetchTodayLogs,
   createMedicationLog,
   deleteMedicationLog,
-} from '../../services/medications';
-import { getTodayDate, formatTime, getGreeting, getDateStr } from '../../utils/date';
+} from '@/services/medications';
+import { getTodayDate, formatTime, getGreeting, getDateStr } from '@/utils/date';
 import { styles } from './styles';
 
 function getMedIcon(time: string): keyof typeof Feather.glyphMap {

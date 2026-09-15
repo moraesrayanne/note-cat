@@ -11,8 +11,8 @@ import {
 import { Image } from 'expo-image';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { useAuth } from '../../contexts/AuthContext';
-import { colors } from '../../theme';
+import { useAuth } from '@/contexts/AuthContext';
+import { colors } from '@/theme';
 import { styles } from './styles';
 
 export default function LoginScreen() {

@@ -10,9 +10,9 @@ import { Image } from 'expo-image';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
 
-import { useAuth } from '../../contexts/AuthContext';
-import { colors } from '../../theme';
-import { saveProfile } from '../../services/profile';
+import { useAuth } from '@/contexts/AuthContext';
+import { colors } from '@/theme';
+import { saveProfile } from '@/services/profile';
 import { styles } from './styles';
 
 export default function ProfileScreen() {

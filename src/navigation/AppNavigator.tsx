@@ -5,19 +5,19 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator, NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { colors, fonts } from '../theme';
-import { RootStackParamList, TabParamList } from './types';
+import { colors, fonts } from '@/theme';
+import { RootStackParamList, TabParamList } from '@/navigation/types';
 import {
   HomeIcon,
   HistoryIcon,
   MedsIcon,
   ProfileIcon,
-} from '../components/TabIcons';
-import HomeScreen from '../screens/Home';
-import MedicationsScreen from '../screens/Medications';
-import AddMedicationScreen from '../screens/AddMedication';
-import HistoryScreen from '../screens/History';
-import ProfileScreen from '../screens/Profile';
+} from '@/components/TabIcons';
+import HomeScreen from '@/screens/Home';
+import MedicationsScreen from '@/screens/Medications';
+import AddMedicationScreen from '@/screens/AddMedication';
+import HistoryScreen from '@/screens/History';
+import ProfileScreen from '@/screens/Profile';
 
 const Tab = createBottomTabNavigator<TabParamList>();
 const RootStack = createNativeStackNavigator<RootStackParamList>();

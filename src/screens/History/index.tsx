@@ -9,11 +9,11 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
 import { Feather } from '@expo/vector-icons';
 
-import { useAuth } from '../../contexts/AuthContext';
-import { MedicationLog } from '../../types';
-import { ListSkeleton } from '../../components/Skeleton';
-import { fetchMedicationLogs } from '../../services/medications';
-import { getTodayDate, formatDateLabel, formatTimeFromISO } from '../../utils/date';
+import { useAuth } from '@/contexts/AuthContext';
+import { MedicationLog } from '@/types';
+import { ListSkeleton } from '@/components/Skeleton';
+import { fetchMedicationLogs } from '@/services/medications';
+import { formatDateLabel, formatTimeFromISO } from '@/utils/date';
 import { styles } from './styles';
 
 interface Section {

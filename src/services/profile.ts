@@ -1,4 +1,4 @@
-import { supabase } from '../lib/supabase';
+import { supabase } from '@/lib/supabase';
 
 export async function fetchCatName(userId: string): Promise<string | null> {
   const { data } = await supabase

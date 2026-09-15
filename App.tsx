@@ -10,10 +10,10 @@ import {
   DMSans_700Bold,
 } from '@expo-google-fonts/dm-sans';
 
-import { AuthProvider, useAuth } from './src/contexts/AuthContext';
-import { colors } from './src/theme';
-import AppNavigator from './src/navigation/AppNavigator';
-import LoginScreen from './src/screens/Login';
+import { AuthProvider, useAuth } from '@/contexts/AuthContext';
+import { colors } from '@/theme';
+import AppNavigator from '@/navigation/AppNavigator';
+import LoginScreen from '@/screens/Login';
 
 function AppContent() {
   const { session, loading } = useAuth();

@@ -1,6 +1,6 @@
 import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
-import { Medication } from '../types';
+import { Medication } from '@/types';
 
 const isExpoGo = Constants.appOwnership === 'expo';
 
