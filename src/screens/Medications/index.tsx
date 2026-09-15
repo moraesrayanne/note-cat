@@ -67,7 +67,7 @@ export default function MedicationsScreen() {
           </Text>
           <View style={[styles.statusTag, item.active ? styles.statusActive : styles.statusInactive]}>
             <Text style={[styles.statusTagText, item.active ? styles.statusActiveText : styles.statusInactiveText]}>
-              {item.active ? 'ATIVO' : 'INATIVO'}
+              {item.active ? 'Ativo' : 'Inativo'}
             </Text>
           </View>
         </View>

@@ -76,7 +76,6 @@ export const styles = StyleSheet.create({
   statusTagText: {
     fontSize: 10,
     fontFamily: fonts.bold,
-    letterSpacing: 0.5,
   },
   statusActiveText: {
     color: colors.success,
