@@ -100,6 +100,10 @@ export const styles = StyleSheet.create({
     backgroundColor: '#FFF',
     borderRadius: 3,
   },
+  diaryWrapper: {
+    paddingHorizontal: 24,
+    paddingBottom: 16,
+  },
   section: {
     paddingHorizontal: 24,
     marginBottom: 8,

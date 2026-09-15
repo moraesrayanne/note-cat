@@ -18,6 +18,7 @@ import { colors } from '@/theme';
 import { HomeSkeleton } from '@/components/Skeleton';
 import { formatTime, getGreeting, getDateStr } from '@/utils/date';
 import { TodayMed, useTodayMeds } from '@/hooks/useTodayMeds';
+import { DiaryBanner } from '@/components/DiaryBanner';
 import { styles } from './styles';
 
 function getMedIcon(time: string): keyof typeof Feather.glyphMap {
@@ -158,6 +159,10 @@ export default function HomeScreen() {
               <View style={[styles.progressFill, { width: `${pct}%` }]} />
             </View>
           </LinearGradient>
+        </View>
+
+        <View style={styles.diaryWrapper}>
+          <DiaryBanner catName={catName} />
         </View>
 
         {pending.length > 0 && (
