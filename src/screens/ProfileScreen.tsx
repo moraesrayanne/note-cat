@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   View,
   Text,
@@ -9,62 +9,33 @@ import {
   Image,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import * as ImagePicker from 'expo-image-picker';
 import { useFocusEffect } from '@react-navigation/native';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
 import { colors, fonts } from '../theme';
 
 export default function ProfileScreen() {
-  const { user, signOut } = useAuth();
+  const { user, catName, setCatName, signOut } = useAuth();
   const insets = useSafeAreaInsets();
-  const [catName, setCatName] = useState('');
-  const [catPhotoUri, setCatPhotoUri] = useState<string | null>(null);
+  const [localName, setLocalName] = useState(catName);
   const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);
 
-  const loadProfile = useCallback(async () => {
-    if (!user) return;
-    const { data } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('user_id', user.id)
-      .single();
-
-    if (data) {
-      setCatName(data.cat_name || '');
-      setCatPhotoUri(data.cat_photo_url || null);
-    }
-  }, [user]);
-
   useFocusEffect(
     useCallback(() => {
-      loadProfile();
-    }, [loadProfile])
+      setLocalName(catName);
+      setEditing(false);
+    }, [catName]),
   );
-
-  const pickImage = async () => {
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ['images'],
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 0.5,
-    });
-
-    if (!result.canceled && result.assets[0]) {
-      setCatPhotoUri(result.assets[0].uri);
-      setEditing(true);
-    }
-  };
 
   const saveProfile = async () => {
     if (!user) return;
     setSaving(true);
 
+    const trimmed = localName.trim() || 'Baden';
     const profileData = {
       user_id: user.id,
-      cat_name: catName.trim(),
-      cat_photo_url: catPhotoUri,
+      cat_name: trimmed,
     };
 
     const { data: existing } = await supabase
@@ -88,6 +59,8 @@ export default function ProfileScreen() {
 
     if (error) {
       Alert.alert('Erro', error.message);
+    } else {
+      setCatName(trimmed);
     }
   };
 
@@ -105,43 +78,34 @@ export default function ProfileScreen() {
         <Text style={styles.subtitle}>Informações do gatinho</Text>
       </View>
 
-      {/* Cat photo */}
-      <TouchableOpacity style={styles.photoContainer} onPress={pickImage}>
-        {catPhotoUri ? (
-          <Image source={{ uri: catPhotoUri }} style={styles.photo} />
-        ) : (
-          <View style={styles.photoPlaceholder}>
-            <Text style={styles.photoEmoji}>🐱</Text>
-            <Text style={styles.photoHint}>Toque para adicionar foto</Text>
-          </View>
-        )}
-        <View style={styles.photoBadge}>
-          <Text style={styles.photoBadgeText}>📷</Text>
+      <View style={styles.photoContainer}>
+        <View style={styles.photoPlaceholder}>
+          <Image
+            source={require('../../assets/cat-icon.png')}
+            style={styles.photoImg}
+          />
         </View>
-      </TouchableOpacity>
+      </View>
 
-      {/* Cat name */}
       <View style={styles.field}>
         <Text style={styles.label}>Nome do gatinho</Text>
         <TextInput
           style={styles.input}
-          placeholder="Ex: Baden"
+          placeholder='Ex: Baden'
           placeholderTextColor={colors.textMuted}
-          value={catName}
+          value={localName}
           onChangeText={(text) => {
-            setCatName(text);
+            setLocalName(text);
             setEditing(true);
           }}
         />
       </View>
 
-      {/* Account info */}
       <View style={styles.card}>
         <Text style={styles.cardLabel}>Conta</Text>
         <Text style={styles.cardValue}>{user?.email}</Text>
       </View>
 
-      {/* Save button */}
       {editing && (
         <TouchableOpacity
           style={[styles.saveButton, saving && styles.saveButtonDisabled]}
@@ -154,12 +118,11 @@ export default function ProfileScreen() {
         </TouchableOpacity>
       )}
 
-      {/* Logout */}
       <TouchableOpacity style={styles.logoutButton} onPress={handleSignOut}>
         <Text style={styles.logoutText}>Sair da conta</Text>
       </TouchableOpacity>
 
-      <Text style={styles.footer}>Note Cat v1.0 🐱</Text>
+      <Text style={styles.footer}>Note Cat v1.0</Text>
     </View>
   );
 }
@@ -187,14 +150,6 @@ const styles = StyleSheet.create({
   photoContainer: {
     alignSelf: 'center',
     marginBottom: 28,
-    position: 'relative',
-  },
-  photo: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    borderWidth: 3,
-    borderColor: colors.primaryBorder,
   },
   photoPlaceholder: {
     width: 120,
@@ -206,31 +161,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  photoEmoji: {
-    fontSize: 40,
-  },
-  photoHint: {
-    fontSize: 10,
-    color: colors.textMuted,
-    fontFamily: fonts.medium,
-    marginTop: 4,
-    textAlign: 'center',
-  },
-  photoBadge: {
-    position: 'absolute',
-    bottom: 0,
-    right: 0,
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: colors.primary,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 3,
-    borderColor: colors.background,
-  },
-  photoBadgeText: {
-    fontSize: 16,
+  photoImg: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
   },
   field: {
     marginBottom: 20,

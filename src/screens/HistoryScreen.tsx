@@ -11,6 +11,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
 import { MedicationLog } from '../types';
+import { Feather } from '@expo/vector-icons';
 import { colors, fonts } from '../theme';
 import { ListSkeleton } from '../components/Skeleton';
 
@@ -43,7 +44,7 @@ interface Section {
 }
 
 export default function HistoryScreen() {
-  const { user } = useAuth();
+  const { user, catName } = useAuth();
   const insets = useSafeAreaInsets();
   const [sections, setSections] = useState<Section[]>([]);
   const [loading, setLoading] = useState(true);
@@ -91,7 +92,7 @@ export default function HistoryScreen() {
   const renderItem = ({ item }: { item: MedicationLog }) => (
     <View style={styles.logItem}>
       <View style={styles.checkIcon}>
-        <Text style={styles.checkText}>✓</Text>
+        <Feather name="check" size={16} color={colors.success} />
       </View>
       <View style={styles.logContent}>
         <Text style={styles.logMed}>
@@ -118,14 +119,14 @@ export default function HistoryScreen() {
     <View style={[styles.container, { paddingTop: insets.top }]}>
       <View style={styles.header}>
         <Text style={styles.title}>Histórico</Text>
-        <Text style={styles.subtitle}>Veja o que o Baden já tomou</Text>
+        <Text style={styles.subtitle}>Veja o que o {catName} já tomou</Text>
       </View>
 
       {loading ? (
         <ListSkeleton count={4} />
       ) : sections.length === 0 ? (
         <View style={styles.emptyContainer}>
-          <Text style={styles.emptyEmoji}>📋</Text>
+          <Feather name="clipboard" size={40} color={colors.textMuted} />
           <Text style={styles.emptyText}>Nenhum registro ainda</Text>
           <Text style={styles.emptySubtext}>
             Marque remédios como tomados na tela Hoje
@@ -216,11 +217,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  checkText: {
-    color: colors.success,
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
   logContent: {
     flex: 1,
   },
@@ -255,10 +251,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 32,
-  },
-  emptyEmoji: {
-    fontSize: 40,
-    marginBottom: 12,
   },
   emptyText: {
     fontSize: 15,
