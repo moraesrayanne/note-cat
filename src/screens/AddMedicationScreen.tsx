@@ -185,7 +185,7 @@ export default function AddMedicationScreen({ navigation, route }: Props) {
         </View>
       </View>
 
-      <View style={styles.bottomButtons}>
+      <View style={[styles.bottomButtons, { paddingBottom: Math.max(insets.bottom, 16) + 16 }]}>
         <TouchableOpacity
           style={[styles.saveButton, !canSave && styles.saveButtonDisabled]}
           onPress={handleSave}
@@ -241,7 +241,6 @@ const styles = StyleSheet.create({
   },
   bottomButtons: {
     paddingHorizontal: 24,
-    paddingBottom: 32,
   },
   iconContainer: {
     width: 72,
