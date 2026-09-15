@@ -101,8 +101,8 @@ function MainTabs() {
         options={{ headerShown: false }}
       />
       <Tab.Screen
-        name='Histórico'
-        component={HistoryScreen}
+        name='Remédios'
+        component={MedicationsScreen}
         options={{ headerShown: false }}
       />
       <Tab.Screen
@@ -120,8 +120,8 @@ function MainTabs() {
         })}
       />
       <Tab.Screen
-        name='Remédios'
-        component={MedicationsScreen}
+        name='Histórico'
+        component={HistoryScreen}
         options={{ headerShown: false }}
       />
       <Tab.Screen
