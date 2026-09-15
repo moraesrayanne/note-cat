@@ -11,12 +11,14 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
 
 import { useAuth } from '@/contexts/AuthContext';
+import { useProfile } from '@/contexts/ProfileContext';
 import { colors } from '@/theme';
 import { saveProfile } from '@/services/profile';
 import { styles } from './styles';
 
 export default function ProfileScreen() {
-  const { user, catName, setCatName, signOut } = useAuth();
+  const { user, signOut } = useAuth();
+  const { catName, setCatName } = useProfile();
   const insets = useSafeAreaInsets();
   const [localName, setLocalName] = useState(catName);
   const [editing, setEditing] = useState(false);

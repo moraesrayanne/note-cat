@@ -10,6 +10,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { Feather } from '@expo/vector-icons';
 
 import { useAuth } from '@/contexts/AuthContext';
+import { useProfile } from '@/contexts/ProfileContext';
 import { MedicationLog } from '@/types';
 import { ListSkeleton } from '@/components/Skeleton';
 import { fetchMedicationLogs } from '@/services/medications';
@@ -23,7 +24,8 @@ interface Section {
 }
 
 export default function HistoryScreen() {
-  const { user, catName } = useAuth();
+  const { user } = useAuth();
+  const { catName } = useProfile();
   const insets = useSafeAreaInsets();
   const [sections, setSections] = useState<Section[]>([]);
   const [loading, setLoading] = useState(true);

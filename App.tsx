@@ -11,6 +11,7 @@ import {
 } from '@expo-google-fonts/dm-sans';
 
 import { AuthProvider, useAuth } from '@/contexts/AuthContext';
+import { ProfileProvider } from '@/contexts/ProfileContext';
 import { colors } from '@/theme';
 import AppNavigator from '@/navigation/AppNavigator';
 import LoginScreen from '@/screens/Login';
@@ -48,8 +49,10 @@ export default function App() {
   return (
     <SafeAreaProvider>
       <AuthProvider>
-        <StatusBar style='dark' />
-        <AppContent />
+        <ProfileProvider>
+          <StatusBar style='dark' />
+          <AppContent />
+        </ProfileProvider>
       </AuthProvider>
     </SafeAreaProvider>
   );

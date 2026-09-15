@@ -12,7 +12,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Feather } from '@expo/vector-icons';
 
-import { useAuth } from '@/contexts/AuthContext';
+import { useProfile } from '@/contexts/ProfileContext';
 import { colors } from '@/theme';
 import { HomeSkeleton } from '@/components/Skeleton';
 import { formatTime, getGreeting, getDateStr } from '@/utils/date';
@@ -48,7 +48,7 @@ function AnimatedCheckbox({ checked }: { checked: boolean }) {
 }
 
 export default function HomeScreen() {
-  const { catName } = useAuth();
+  const { catName } = useProfile();
   const insets = useSafeAreaInsets();
   const { meds, loading, refreshing, toggleMed, onRefresh, pending, taken, pct } = useTodayMeds();
 
