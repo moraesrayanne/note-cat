@@ -7,7 +7,9 @@ import {
   StyleSheet,
   Alert,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { Feather, FontAwesome6 } from '@expo/vector-icons';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
 import { colors, fonts } from '../theme';
@@ -45,6 +47,7 @@ function isValidTime(value: string): boolean {
 
 export default function AddMedicationScreen({ navigation, route }: Props) {
   const { user } = useAuth();
+  const insets = useSafeAreaInsets();
   const editing = route.params?.medication;
 
   const [name, setName] = useState(editing?.name ?? '');
@@ -95,9 +98,18 @@ export default function AddMedicationScreen({ navigation, route }: Props) {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { paddingTop: insets.top }]}>
+      <View style={styles.headerRow}>
+        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+          <Text style={styles.backArrow}>‹</Text>
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>{editing ? 'Editar remédio' : 'Novo remédio'}</Text>
+        <View style={styles.backButton} />
+      </View>
+
+      <View style={styles.formContent}>
       <View style={styles.iconContainer}>
-        <Text style={styles.icon}>{editing ? '✏️' : '💊'}</Text>
+        {editing ? <Feather name="edit-2" size={32} color={colors.primary} /> : <FontAwesome6 name="pills" size={28} color={colors.primary} />}
       </View>
 
       <View style={styles.field}>
@@ -148,6 +160,7 @@ export default function AddMedicationScreen({ navigation, route }: Props) {
       <TouchableOpacity onPress={() => navigation.goBack()}>
         <Text style={styles.cancelText}>Cancelar</Text>
       </TouchableOpacity>
+      </View>
     </View>
   );
 }
@@ -156,7 +169,35 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,
-    padding: 24,
+  },
+  headerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    paddingTop: 8,
+    paddingBottom: 4,
+  },
+  backButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  backArrow: {
+    fontSize: 28,
+    color: colors.text,
+    fontWeight: '300',
+    marginTop: -2,
+  },
+  headerTitle: {
+    fontSize: 17,
+    fontFamily: fonts.bold,
+    color: colors.text,
+  },
+  formContent: {
+    paddingHorizontal: 24,
   },
   iconContainer: {
     width: 72,
@@ -168,9 +209,6 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     marginBottom: 28,
     marginTop: 8,
-  },
-  icon: {
-    fontSize: 32,
   },
   field: {
     marginBottom: 18,

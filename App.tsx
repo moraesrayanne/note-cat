@@ -51,11 +51,7 @@ function MedsStack() {
       <Stack.Screen
         name="AddMedication"
         component={AddMedicationScreen}
-        options={({ route }: any) => ({
-          title: route.params?.medication ? 'Editar remédio' : 'Novo remédio',
-          headerBackTitle: ' ',
-          headerBackTitleVisible: false,
-        })}
+        options={{ headerShown: false }}
       />
     </Stack.Navigator>
   );
