@@ -4,38 +4,35 @@ import {
   Text,
   FlatList,
   TouchableOpacity,
-  StyleSheet,
-  Alert,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { supabase } from '../lib/supabase';
-import { useAuth } from '../contexts/AuthContext';
-import { Medication } from '../types';
 import Svg, { Path } from 'react-native-svg';
 import { Feather, FontAwesome6 } from '@expo/vector-icons';
-import { colors, fonts } from '../theme';
-import { cancelMedNotification } from '../lib/notifications';
-import { ListSkeleton } from '../components/Skeleton';
+
+import { useAuth } from '../../contexts/AuthContext';
+import { Medication } from '../../types';
+import { colors } from '../../theme';
+import { ListSkeleton } from '../../components/Skeleton';
+import { cancelMedNotification } from '../../lib/notifications';
+import { fetchAllMedications, deactivateMedication } from '../../services/medications';
+import { formatTime } from '../../utils/date';
+import { RootStackParamList } from '../../navigation/types';
+import { styles } from './styles';
 
 export default function MedicationsScreen() {
   const { user } = useAuth();
   const insets = useSafeAreaInsets();
-  const navigation = useNavigation<NativeStackNavigationProp<any>>();
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [meds, setMeds] = useState<Medication[]>([]);
   const [loading, setLoading] = useState(true);
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
 
   const loadMeds = useCallback(async () => {
     if (!user) return;
-    const { data } = await supabase
-      .from('medications')
-      .select('*')
-      .eq('user_id', user.id)
-      .order('active', { ascending: false })
-      .order('time');
-    setMeds(data ?? []);
+    const { data } = await fetchAllMedications(user.id);
+    setMeds(data);
     setLoading(false);
   }, [user]);
 
@@ -46,13 +43,11 @@ export default function MedicationsScreen() {
   );
 
   const deleteMed = async (med: Medication) => {
-    await supabase.from('medications').update({ active: false }).eq('id', med.id);
+    await deactivateMedication(med.id);
     await cancelMedNotification(med.id);
     setConfirmDelete(null);
     loadMeds();
   };
-
-  const formatTime = (time: string) => time.substring(0, 5);
 
   const renderItem = ({ item }: { item: Medication }) => (
     <TouchableOpacity
@@ -137,157 +132,3 @@ export default function MedicationsScreen() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.background,
-  },
-  header: {
-    padding: 24,
-    paddingBottom: 16,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  title: {
-    fontSize: 28,
-    fontFamily: fonts.bold,
-    color: colors.text,
-  },
-  subtitle: {
-    fontSize: 13,
-    color: colors.textMuted,
-    fontFamily: fonts.regular,
-    marginTop: 4,
-  },
-  list: {
-    paddingHorizontal: 24,
-    paddingBottom: 24,
-  },
-  card: {
-    backgroundColor: colors.cardBg,
-    borderRadius: 16,
-    padding: 16,
-    marginBottom: 10,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 14,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.04,
-    shadowRadius: 4,
-    elevation: 1,
-  },
-  medIcon: {
-    width: 44,
-    height: 44,
-    borderRadius: 12,
-    backgroundColor: colors.primaryBg,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  cardInactive: {
-    opacity: 0.65,
-  },
-  medIconInactive: {
-    backgroundColor: '#F0EBE8',
-  },
-  cardContent: {
-    flex: 1,
-  },
-  nameRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  medName: {
-    fontSize: 15,
-    fontFamily: fonts.semibold,
-    color: colors.text,
-    flexShrink: 1,
-  },
-  textInactive: {
-    color: colors.textMuted,
-  },
-  statusTag: {
-    paddingHorizontal: 7,
-    paddingVertical: 2,
-    borderRadius: 6,
-  },
-  statusActive: {
-    backgroundColor: colors.successBg,
-  },
-  statusInactive: {
-    backgroundColor: '#F0EBE8',
-  },
-  statusTagText: {
-    fontSize: 10,
-    fontFamily: fonts.bold,
-    letterSpacing: 0.5,
-  },
-  statusActiveText: {
-    color: colors.success,
-  },
-  statusInactiveText: {
-    color: colors.textMuted,
-  },
-  medDose: {
-    fontSize: 12,
-    color: colors.textMuted,
-    fontFamily: fonts.regular,
-    marginTop: 2,
-  },
-  confirmRow: {
-    flexDirection: 'row',
-    gap: 8,
-  },
-  confirmDeleteBtn: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 8,
-    backgroundColor: colors.primary,
-  },
-  confirmDeleteText: {
-    color: '#FFF',
-    fontSize: 11,
-    fontFamily: fonts.bold,
-  },
-  confirmCancelBtn: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 8,
-    backgroundColor: '#F0E8E4',
-  },
-  confirmCancelText: {
-    color: colors.text,
-    fontSize: 11,
-    fontFamily: fonts.semibold,
-  },
-  deleteIconBtn: {
-    width: 32,
-    height: 32,
-    borderRadius: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  deleteIcon: {
-    fontSize: 16,
-    opacity: 0.5,
-  },
-  emptyContainer: {
-    alignItems: 'center',
-    marginTop: 80,
-  },
-  emptyText: {
-    fontSize: 15,
-    fontFamily: fonts.semibold,
-    color: colors.text,
-  },
-  emptySubtext: {
-    fontSize: 13,
-    color: colors.textMuted,
-    fontFamily: fonts.regular,
-    marginTop: 4,
-  },
-});

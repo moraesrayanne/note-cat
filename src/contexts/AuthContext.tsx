@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { Session, User } from '@supabase/supabase-js';
 import { supabase } from '../lib/supabase';
+import { fetchCatName } from '../services/profile';
 
 interface AuthContextType {
   session: Session | null;
@@ -35,14 +36,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (!session?.user) return;
-    supabase
-      .from('profiles')
-      .select('cat_name')
-      .eq('user_id', session.user.id)
-      .single()
-      .then(({ data }) => {
-        if (data?.cat_name) setCatName(data.cat_name);
-      });
+    fetchCatName(session.user.id).then((name) => {
+      if (name) setCatName(name);
+    });
   }, [session?.user]);
 
   const signIn = async (email: string, password: string) => {

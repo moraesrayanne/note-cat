@@ -4,7 +4,6 @@ import {
   Text,
   FlatList,
   TouchableOpacity,
-  StyleSheet,
   RefreshControl,
   Animated,
   Alert,
@@ -13,35 +12,21 @@ import { Image } from 'expo-image';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useFocusEffect } from '@react-navigation/native';
-import { supabase } from '../lib/supabase';
-import { useAuth } from '../contexts/AuthContext';
-import { Medication, MedicationLog } from '../types';
 import { Feather } from '@expo/vector-icons';
-import { colors, fonts } from '../theme';
-import { HomeSkeleton } from '../components/Skeleton';
-import { syncAllNotifications } from '../lib/notifications';
 
-function getTodayDate(): string {
-  const now = new Date();
-  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
-}
-
-function formatTime(time: string): string {
-  return time.substring(0, 5);
-}
-
-function getGreeting(): string {
-  const h = new Date().getHours();
-  if (h < 12) return 'Bom dia';
-  if (h < 18) return 'Boa tarde';
-  return 'Boa noite';
-}
-
-function getDateStr(): string {
-  const months = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'];
-  const now = new Date();
-  return `${now.getDate()} de ${months[now.getMonth()]}`;
-}
+import { useAuth } from '../../contexts/AuthContext';
+import { Medication, MedicationLog } from '../../types';
+import { colors } from '../../theme';
+import { HomeSkeleton } from '../../components/Skeleton';
+import { syncAllNotifications } from '../../lib/notifications';
+import {
+  fetchActiveMedications,
+  fetchTodayLogs,
+  createMedicationLog,
+  deleteMedicationLog,
+} from '../../services/medications';
+import { getTodayDate, formatTime, getGreeting, getDateStr } from '../../utils/date';
+import { styles } from './styles';
 
 function getMedIcon(time: string): keyof typeof Feather.glyphMap {
   const hour = parseInt(time.substring(0, 2), 10);
@@ -88,27 +73,17 @@ export default function HomeScreen() {
     if (!user) return;
     const today = getTodayDate();
 
-    const { data: medications } = await supabase
-      .from('medications')
-      .select('*')
-      .eq('user_id', user.id)
-      .eq('active', true)
-      .order('time');
+    const { data: medications } = await fetchActiveMedications(user.id);
+    const { data: logs } = await fetchTodayLogs(user.id, today);
 
-    const { data: logs } = await supabase
-      .from('medication_logs')
-      .select('*')
-      .eq('user_id', user.id)
-      .eq('date', today);
-
-    const todayMeds: TodayMed[] = (medications ?? []).map((med) => ({
+    const todayMeds: TodayMed[] = medications.map((med) => ({
       medication: med,
-      log: (logs ?? []).find((l) => l.medication_id === med.id) ?? null,
+      log: logs.find((l) => l.medication_id === med.id) ?? null,
     }));
 
     setMeds(todayMeds);
     setLoading(false);
-    syncAllNotifications(medications ?? []);
+    syncAllNotifications(medications);
   }, [user]);
 
   useFocusEffect(
@@ -147,10 +122,10 @@ export default function HomeScreen() {
 
     try {
       if (wasTaken) {
-        const { error } = await supabase.from('medication_logs').delete().eq('id', item.log!.id);
+        const { error } = await deleteMedicationLog(item.log!.id);
         if (error) throw error;
       } else {
-        const { error } = await supabase.from('medication_logs').insert({
+        const { error } = await createMedicationLog({
           medication_id: medId,
           user_id: user.id,
           date: today,
@@ -181,7 +156,7 @@ export default function HomeScreen() {
   const taken = meds.filter((m) => m.log);
   const pct = meds.length > 0 ? Math.round((taken.length / meds.length) * 100) : 0;
 
-  const renderPendingItem = (item: TodayMed, index: number) => (
+  const renderPendingItem = (item: TodayMed) => (
     <TouchableOpacity
       key={item.medication.id}
       style={styles.medCard}
@@ -239,7 +214,7 @@ export default function HomeScreen() {
           <View style={styles.headerRow}>
             <View style={styles.catPhoto}>
               <Image
-                source={require('../../assets/cat-icon.png')}
+                source={require('../../../assets/cat-icon.png')}
                 style={styles.catPhotoImg}
                 contentFit="cover"
                 transition={200}
@@ -263,7 +238,7 @@ export default function HomeScreen() {
         <View style={styles.headerRow}>
           <View style={styles.catPhoto}>
             <Image
-              source={require('../../assets/cat-icon.png')}
+              source={require('../../../assets/cat-icon.png')}
               style={styles.catPhotoImg}
               contentFit="cover"
               transition={200}
@@ -331,220 +306,3 @@ export default function HomeScreen() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.background,
-  },
-  fixedHeader: {
-    paddingHorizontal: 24,
-    paddingTop: 24,
-    paddingBottom: 12,
-    backgroundColor: colors.background,
-  },
-  headerRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 14,
-  },
-  statsWrapper: {
-    paddingHorizontal: 24,
-    paddingBottom: 16,
-  },
-  catPhoto: {
-    width: 52,
-    height: 52,
-    borderRadius: 26,
-    borderWidth: 2.5,
-    borderColor: colors.primaryBorder,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: colors.primaryBg,
-  },
-  catPhotoImg: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-  },
-  greeting: {
-    fontSize: 14,
-    color: colors.primary,
-    fontFamily: fonts.semibold,
-    letterSpacing: 0.5,
-  },
-  title: {
-    fontSize: 22,
-    fontFamily: fonts.bold,
-    color: colors.text,
-    lineHeight: 28,
-  },
-  statsCard: {
-    borderRadius: 20,
-    padding: 20,
-    overflow: 'hidden',
-    position: 'relative',
-  },
-  statsCircle1: {
-    position: 'absolute',
-    top: -20,
-    right: -20,
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    backgroundColor: 'rgba(255,255,255,0.1)',
-  },
-  statsCircle2: {
-    position: 'absolute',
-    bottom: -30,
-    right: 20,
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    backgroundColor: 'rgba(255,255,255,0.08)',
-  },
-  statsDate: {
-    fontSize: 13,
-    color: 'rgba(255,255,255,0.85)',
-    fontFamily: fonts.regular,
-    marginBottom: 4,
-  },
-  statsCount: {
-    fontSize: 28,
-    fontFamily: fonts.bold,
-    color: '#FFF',
-    marginBottom: 2,
-  },
-  statsDetail: {
-    fontSize: 13,
-    color: 'rgba(255,255,255,0.8)',
-    fontFamily: fonts.regular,
-  },
-  progressBg: {
-    marginTop: 14,
-    height: 6,
-    backgroundColor: 'rgba(255,255,255,0.25)',
-    borderRadius: 3,
-  },
-  progressFill: {
-    height: 6,
-    backgroundColor: '#FFF',
-    borderRadius: 3,
-  },
-  section: {
-    paddingHorizontal: 24,
-    marginBottom: 8,
-  },
-  sectionLabel: {
-    fontSize: 13,
-    fontFamily: fonts.semibold,
-    color: colors.primary,
-    textTransform: 'uppercase',
-    letterSpacing: 0.8,
-    marginBottom: 12,
-  },
-  sectionLabelDone: {
-    fontSize: 13,
-    fontFamily: fonts.semibold,
-    color: colors.success,
-    textTransform: 'uppercase',
-    letterSpacing: 0.8,
-    marginBottom: 12,
-    marginTop: 10,
-  },
-  medCard: {
-    backgroundColor: colors.cardBg,
-    borderRadius: 16,
-    padding: 16,
-    marginBottom: 10,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 14,
-    shadowColor: colors.primary,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
-    shadowRadius: 8,
-    elevation: 2,
-  },
-  medCardTaken: {
-    opacity: 0.6,
-  },
-  medIcon: {
-    width: 44,
-    height: 44,
-    borderRadius: 12,
-    backgroundColor: colors.primaryBg,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  medIconTaken: {
-    backgroundColor: colors.successBg,
-  },
-  medContent: {
-    flex: 1,
-  },
-  medName: {
-    fontSize: 15,
-    fontFamily: fonts.semibold,
-    color: colors.text,
-  },
-  medNameTaken: {
-    textDecorationLine: 'line-through',
-  },
-  medDose: {
-    fontSize: 12,
-    color: colors.textMuted,
-    fontFamily: fonts.regular,
-    marginTop: 2,
-  },
-  doseRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 2,
-    gap: 6,
-  },
-  takenTag: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: colors.successBg,
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: 6,
-    gap: 3,
-  },
-  takenTagText: {
-    fontSize: 11,
-    fontFamily: fonts.medium,
-    color: colors.success,
-  },
-  checkbox: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    borderWidth: 2.5,
-    borderColor: colors.primaryBorder,
-  },
-  checkboxChecked: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    backgroundColor: colors.primary,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  emptyContainer: {
-    alignItems: 'center',
-    padding: 40,
-  },
-  emptyText: {
-    fontSize: 15,
-    fontFamily: fonts.semibold,
-    color: colors.text,
-  },
-  emptySubtext: {
-    fontSize: 13,
-    color: colors.textMuted,
-    fontFamily: fonts.regular,
-    marginTop: 4,
-  },
-});

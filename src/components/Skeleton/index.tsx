@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
-import { View, StyleSheet, Animated } from 'react-native';
-import { colors } from '../theme';
+import { View, Animated } from 'react-native';
+import { colors } from '../../theme';
+import { styles } from './styles';
 
 function SkeletonBlock({ width, height, borderRadius = 8, style }: {
   width: number | string;
@@ -34,13 +35,8 @@ function SkeletonBlock({ width, height, borderRadius = 8, style }: {
 export function HomeSkeleton() {
   return (
     <View style={styles.container}>
-      {/* Stats card */}
       <SkeletonBlock width="100%" height={140} borderRadius={20} style={{ marginBottom: 24 }} />
-
-      {/* Section label */}
       <SkeletonBlock width={90} height={13} style={{ marginBottom: 12 }} />
-
-      {/* Med cards */}
       {[0, 1, 2].map((i) => (
         <View key={i} style={styles.cardSkeleton}>
           <SkeletonBlock width={44} height={44} borderRadius={12} />
@@ -71,27 +67,3 @@ export function ListSkeleton({ count = 3 }: { count?: number }) {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    padding: 24,
-  },
-  headerRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 14,
-    marginBottom: 20,
-  },
-  cardSkeleton: {
-    backgroundColor: colors.cardBg,
-    borderRadius: 16,
-    padding: 16,
-    marginBottom: 10,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 14,
-  },
-  listContainer: {
-    paddingHorizontal: 24,
-  },
-});
