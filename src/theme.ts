@@ -12,6 +12,8 @@ export const colors = {
   textLight: '#D4B5AD',
   success: '#4CAF50',
   successBg: '#ECFFF0',
+  error: '#E57373',
+  errorBg: '#FFF5F5',
   border: '#FFE8E0',
   navBorder: '#FFE8E0',
 };

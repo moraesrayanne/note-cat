@@ -93,8 +93,8 @@ export const styles = StyleSheet.create({
     backgroundColor: colors.primaryBg,
   },
   toggleButtonNo: {
-    borderColor: '#E57373',
-    backgroundColor: '#FFF5F5',
+    borderColor: colors.error,
+    backgroundColor: colors.errorBg,
   },
   toggleText: {
     fontSize: 15,
@@ -105,7 +105,7 @@ export const styles = StyleSheet.create({
     color: colors.primary,
   },
   toggleTextNo: {
-    color: '#E57373',
+    color: colors.error,
   },
   emojiRow: {
     flexDirection: 'row',
@@ -165,7 +165,7 @@ export const styles = StyleSheet.create({
     fontFamily: fonts.medium,
   },
   deleteText: {
-    color: '#E57373',
+    color: colors.error,
     textAlign: 'center',
     marginTop: 10,
     fontSize: 14,

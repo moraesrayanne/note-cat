@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, RefreshControl, Animated } from 'react-native';
 import { Image } from 'expo-image';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -24,26 +24,24 @@ function getMedIcon(time: string): keyof typeof Feather.glyphMap {
 }
 
 function AnimatedCheckbox({ checked }: { checked: boolean }) {
-  const scaleRef = useRef(new Animated.Value(1));
+  const [scale] = useState(() => new Animated.Value(1));
 
   useEffect(() => {
     Animated.sequence([
-      Animated.timing(scaleRef.current, { toValue: 1.3, duration: 120, useNativeDriver: true }),
-      Animated.spring(scaleRef.current, { toValue: 1, friction: 4, useNativeDriver: true }),
+      Animated.timing(scale, { toValue: 1.3, duration: 120, useNativeDriver: true }),
+      Animated.spring(scale, { toValue: 1, friction: 4, useNativeDriver: true }),
     ]).start();
-  }, [checked]);
+  }, [checked, scale]);
 
   if (checked) {
     return (
-      // eslint-disable-next-line react-hooks/refs
-      <Animated.View style={[styles.checkboxChecked, { transform: [{ scale: scaleRef.current }] }]}>
+      <Animated.View style={[styles.checkboxChecked, { transform: [{ scale }] }]}>
         <Feather name="check" size={14} color="#FFF" />
       </Animated.View>
     );
   }
 
-  // eslint-disable-next-line react-hooks/refs
-  return <Animated.View style={[styles.checkbox, { transform: [{ scale: scaleRef.current }] }]} />;
+  return <Animated.View style={[styles.checkbox, { transform: [{ scale }] }]} />;
 }
 
 export default function HomeScreen() {

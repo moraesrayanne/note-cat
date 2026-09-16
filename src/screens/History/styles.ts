@@ -15,23 +15,6 @@ export const styles = StyleSheet.create({
     paddingBottom: 100,
     paddingTop: 4,
   },
-  sectionHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    marginBottom: 10,
-    marginTop: 12,
-  },
-  sectionTitle: {
-    fontSize: 13,
-    fontFamily: fonts.bold,
-    color: colors.primary,
-  },
-  sectionCount: {
-    fontSize: 11,
-    fontFamily: fonts.medium,
-    color: colors.textMuted,
-  },
   logItem: {
     backgroundColor: colors.cardBg,
     borderRadius: 14,

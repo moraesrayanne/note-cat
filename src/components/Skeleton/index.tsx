@@ -1,5 +1,5 @@
-import React, { useEffect, useRef } from 'react';
-import { View, Animated } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Animated, StyleProp, ViewStyle, DimensionValue } from 'react-native';
 import { colors } from '@/theme';
 import { styles } from './styles';
 
@@ -9,13 +9,12 @@ function SkeletonBlock({
   borderRadius = 8,
   style,
 }: {
-  width: number | string;
+  width: DimensionValue;
   height: number;
   borderRadius?: number;
-  style?: any;
+  style?: StyleProp<ViewStyle>;
 }) {
-  // eslint-disable-next-line react-hooks/refs
-  const opacity = useRef(new Animated.Value(0.3)).current;
+  const [opacity] = useState(() => new Animated.Value(0.3));
 
   useEffect(() => {
     const animation = Animated.loop(
@@ -32,7 +31,7 @@ function SkeletonBlock({
     <Animated.View
       style={[
         {
-          width: width as any,
+          width,
           height,
           borderRadius,
           backgroundColor: colors.primaryBgLight,

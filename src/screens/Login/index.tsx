@@ -14,7 +14,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useAuth } from '@/contexts/AuthContext';
 import { colors } from '@/theme';
-import { catLogin } from '@/assets';
+import { catLogin, CAT_ICON_BLURHASH } from '@/assets';
 import { styles } from './styles';
 
 export default function LoginScreen() {
@@ -52,7 +52,7 @@ export default function LoginScreen() {
               style={styles.photoImg}
               contentFit="cover"
               transition={200}
-              placeholder={{ blurhash: 'LKO2?U%2Tw=w]~RBVZRi};RPxuwH' }}
+              placeholder={{ blurhash: CAT_ICON_BLURHASH }}
             />
           </View>
           <Text style={styles.title}>Note Cat</Text>

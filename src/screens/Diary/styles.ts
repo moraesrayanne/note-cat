@@ -152,7 +152,7 @@ export const styles = StyleSheet.create({
     backgroundColor: colors.successBg,
   },
   caixinhaCardRed: {
-    backgroundColor: '#FFF5F5',
+    backgroundColor: colors.errorBg,
   },
 
   gridEmoji: {
@@ -172,7 +172,7 @@ export const styles = StyleSheet.create({
     color: colors.primary,
   },
   gridCellValueBad: {
-    color: '#E57373',
+    color: colors.error,
   },
   gridCellValueNormal: {
     color: colors.textMuted,

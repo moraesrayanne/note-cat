@@ -3,7 +3,7 @@ import { colors, fonts } from '@/theme';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const STRIP_H_PADDING = 24;
-export const ITEM_GAP = 5;
+const ITEM_GAP = 5;
 export const ITEM_WIDTH = (SCREEN_WIDTH - STRIP_H_PADDING - ITEM_GAP * 2) / 7;
 
 export const styles = StyleSheet.create({

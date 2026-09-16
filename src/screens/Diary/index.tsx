@@ -114,7 +114,7 @@ export default function DiaryScreen({ navigation }: Props) {
                   <Feather
                     name={item.used_litter_box ? 'check' : 'x'}
                     size={22}
-                    color={item.used_litter_box ? colors.success : '#E57373'}
+                    color={item.used_litter_box ? colors.success : colors.error}
                   />
                   <Text style={styles.gridCellLabel}>Caixinha</Text>
                   <Text

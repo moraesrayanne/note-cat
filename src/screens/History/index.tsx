@@ -5,6 +5,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { Feather } from '@expo/vector-icons';
 
 import { useAuth } from '@/contexts/AuthContext';
+import { colors } from '@/theme';
 import { ScreenHeader } from '@/components/ScreenHeader';
 import { DateStrip, DotData } from '@/components/DateStrip';
 import { MedicationLog } from '@/types';
@@ -90,7 +91,7 @@ export default function HistoryScreen() {
   const renderItem = ({ item }: { item: MedicationLog }) => (
     <View style={styles.logItem}>
       <View style={styles.checkIcon}>
-        <Feather name="check" size={16} color="#4CAF50" />
+        <Feather name="check" size={16} color={colors.success} />
       </View>
       <View style={styles.logContent}>
         <Text style={styles.logMed}>{item.medication?.name ?? 'Medicamento removido'}</Text>
