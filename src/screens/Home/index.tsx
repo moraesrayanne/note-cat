@@ -13,7 +13,7 @@ import { catIcon, CAT_ICON_BLURHASH } from '@/assets';
 import { colors } from '@/theme';
 import { RootStackParamList } from '@/navigation/types';
 import { HomeSkeleton } from '@/components/Skeleton';
-import { formatTime, getGreeting, getDateStr } from '@/utils/date';
+import { formatTime, formatTimeFromISO, getGreeting, getDateStr } from '@/utils/date';
 import { TodayMed, useTodayMeds } from '@/hooks/useTodayMeds';
 import { DiaryBanner } from '@/components/DiaryBanner';
 import { styles } from './styles';
@@ -71,12 +71,7 @@ export default function HomeScreen() {
   );
 
   const renderTakenItem = (item: TodayMed) => {
-    const takenTime = item.log
-      ? new Date(item.log.taken_at).toLocaleTimeString('pt-BR', {
-          hour: '2-digit',
-          minute: '2-digit',
-        })
-      : '';
+    const takenTime = item.log ? formatTimeFromISO(item.log.taken_at) : '';
     return (
       <TouchableOpacity
         key={item.medication.id}

@@ -87,11 +87,6 @@ export const styles = StyleSheet.create({
   saveButtonDisabled: {
     opacity: 0.6,
   },
-  saveText: {
-    color: '#FFF',
-    fontSize: 16,
-    fontFamily: fonts.bold,
-  },
   logoutButton: {
     backgroundColor: colors.primary,
     borderRadius: 12,

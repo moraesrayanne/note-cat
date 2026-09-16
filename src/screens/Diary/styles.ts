@@ -14,20 +14,6 @@ export const styles = StyleSheet.create({
     paddingBottom: 12,
     gap: 12,
   },
-  backButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 12,
-    backgroundColor: colors.primaryBg,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  backArrow: {
-    fontSize: 28,
-    color: colors.primary,
-    fontWeight: '300',
-    marginTop: -2,
-  },
   headerTexts: {
     flex: 1,
   },

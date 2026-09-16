@@ -14,20 +14,6 @@ export const styles = StyleSheet.create({
     paddingBottom: 12,
     gap: 12,
   },
-  backButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 12,
-    backgroundColor: colors.primaryBg,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  backArrow: {
-    fontSize: 28,
-    color: colors.primary,
-    fontWeight: '300',
-    marginTop: -2,
-  },
   headerTitle: {
     flex: 1,
     fontSize: 20,
@@ -124,30 +110,6 @@ export const styles = StyleSheet.create({
     color: colors.primary,
     textAlign: 'center',
     letterSpacing: 4,
-  },
-  saveButton: {
-    backgroundColor: colors.primary,
-    borderRadius: 16,
-    padding: 16,
-    alignItems: 'center',
-    shadowColor: colors.primary,
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.3,
-    shadowRadius: 20,
-    elevation: 4,
-  },
-  saveButtonDisabled: {
-    backgroundColor: colors.primaryBgInput,
-    shadowOpacity: 0,
-    elevation: 0,
-  },
-  saveText: {
-    color: '#FFF',
-    fontSize: 16,
-    fontFamily: fonts.bold,
-  },
-  saveTextDisabled: {
-    color: '#D4A99E',
   },
   cancelText: {
     color: colors.textMuted,

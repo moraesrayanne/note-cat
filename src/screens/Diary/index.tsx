@@ -12,10 +12,9 @@ import { colors } from '@/theme';
 import { fetchDiaryEntries } from '@/services/diary';
 import { formatDateLabel, getTodayDate } from '@/utils/date';
 import { RootStackParamList } from '@/navigation/types';
+import { commonStyles } from '@/styles/common';
+import { ENERGY_EMOJIS, ENERGY_LABELS } from '@/constants/diary';
 import { styles } from './styles';
-
-const ENERGY_EMOJIS = ['😿', '😾', '🐱', '😸', '😻'];
-const ENERGY_LABELS = ['Muito baixa', 'Baixa', 'Normal', 'Boa', 'Ótima'];
 
 function energyValueStyle(level: number) {
   if (level >= 4) return styles.gridCellValueGood;
@@ -161,8 +160,8 @@ export default function DiaryScreen({ navigation }: Props) {
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
       <View style={styles.headerRow}>
-        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-          <Text style={styles.backArrow}>‹</Text>
+        <TouchableOpacity style={commonStyles.backButton} onPress={() => navigation.goBack()}>
+          <Text style={commonStyles.backArrow}>‹</Text>
         </TouchableOpacity>
         <View style={styles.headerTexts}>
           <Text style={styles.headerTitle}>Diário</Text>

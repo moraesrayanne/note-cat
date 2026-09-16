@@ -18,6 +18,7 @@ import { ScreenHeader } from '@/components/ScreenHeader';
 import { catIcon, CAT_ICON_BLURHASH } from '@/assets';
 import { colors } from '@/theme';
 import { saveProfile } from '@/services/profile';
+import { commonStyles } from '@/styles/common';
 import { styles } from './styles';
 
 export default function ProfileScreen() {
@@ -101,7 +102,7 @@ export default function ProfileScreen() {
             onPress={handleSave}
             disabled={saving}
           >
-            <Text style={styles.saveText}>{saving ? 'Salvando...' : 'Salvar perfil'}</Text>
+            <Text style={commonStyles.saveText}>{saving ? 'Salvando...' : 'Salvar perfil'}</Text>
           </TouchableOpacity>
         )}
 

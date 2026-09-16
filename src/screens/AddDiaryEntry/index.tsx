@@ -19,10 +19,9 @@ import { colors } from '@/theme';
 import { upsertDiaryEntry, deleteDiaryEntry } from '@/services/diary';
 import { getTodayDate, formatDateLabel } from '@/utils/date';
 import { RootStackParamList } from '@/navigation/types';
+import { commonStyles } from '@/styles/common';
+import { ENERGY_EMOJIS, ENERGY_LABELS } from '@/constants/diary';
 import { styles } from './styles';
-
-const ENERGY_EMOJIS = ['😿', '😾', '🐱', '😸', '😻'];
-const ENERGY_LABELS = ['Muito baixa', 'Baixa', 'Normal', 'Boa', 'Ótima'];
 
 type Props = NativeStackScreenProps<RootStackParamList, 'AddDiaryEntry'>;
 
@@ -100,8 +99,8 @@ export default function AddDiaryEntryScreen({ navigation, route }: Props) {
       <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
         <View style={[styles.container, { paddingTop: insets.top }]}>
           <View style={styles.headerRow}>
-            <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-              <Text style={styles.backArrow}>‹</Text>
+            <TouchableOpacity style={commonStyles.backButton} onPress={() => navigation.goBack()}>
+              <Text style={commonStyles.backArrow}>‹</Text>
             </TouchableOpacity>
             <View style={styles.headerTexts}>
               <Text style={styles.headerTitle}>
@@ -210,11 +209,11 @@ export default function AddDiaryEntryScreen({ navigation, route }: Props) {
 
             <View style={styles.bottomButtons}>
               <TouchableOpacity
-                style={[styles.saveButton, saving && styles.saveButtonDisabled]}
+                style={[commonStyles.saveButton, saving && commonStyles.saveButtonDisabled]}
                 onPress={handleSave}
                 disabled={saving}
               >
-                <Text style={[styles.saveText, saving && styles.saveTextDisabled]}>
+                <Text style={[commonStyles.saveText, saving && commonStyles.saveTextDisabled]}>
                   {saving ? 'Salvando...' : 'Salvar registro'}
                 </Text>
               </TouchableOpacity>

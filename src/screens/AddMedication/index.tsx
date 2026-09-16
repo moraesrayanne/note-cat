@@ -21,6 +21,7 @@ import { scheduleMedNotification, cancelMedNotification } from '@/lib/notificati
 import { saveMedication } from '@/services/medications';
 import { formatTimeInput, isValidTime } from '@/utils/date';
 import { RootStackParamList } from '@/navigation/types';
+import { commonStyles } from '@/styles/common';
 import { styles } from './styles';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'AddMedication'>;
@@ -82,8 +83,8 @@ export default function AddMedicationScreen({ navigation, route }: Props) {
       <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
         <View style={[styles.container, { paddingTop: insets.top }]}>
           <View style={styles.headerRow}>
-            <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-              <Text style={styles.backArrow}>‹</Text>
+            <TouchableOpacity style={commonStyles.backButton} onPress={() => navigation.goBack()}>
+              <Text style={commonStyles.backArrow}>‹</Text>
             </TouchableOpacity>
             <Text style={styles.headerTitle}>{editing ? 'Editar remédio' : 'Novo remédio'}</Text>
             <View style={styles.headerSpacer} />
@@ -169,11 +170,11 @@ export default function AddMedicationScreen({ navigation, route }: Props) {
 
             <View style={styles.bottomButtons}>
               <TouchableOpacity
-                style={[styles.saveButton, !canSave && styles.saveButtonDisabled]}
+                style={[commonStyles.saveButton, !canSave && commonStyles.saveButtonDisabled]}
                 onPress={handleSave}
                 disabled={saving || !canSave}
               >
-                <Text style={[styles.saveText, !canSave && styles.saveTextDisabled]}>
+                <Text style={[commonStyles.saveText, !canSave && commonStyles.saveTextDisabled]}>
                   {saving ? 'Salvando...' : editing ? 'Salvar alterações' : 'Salvar remédio'}
                 </Text>
               </TouchableOpacity>
