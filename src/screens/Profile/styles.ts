@@ -1,0 +1,114 @@
+import { StyleSheet } from 'react-native';
+import { colors, fonts } from '@/theme';
+
+export const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: colors.background,
+    padding: 24,
+  },
+  header: {
+    marginBottom: 24,
+  },
+  photoContainer: {
+    alignSelf: 'center',
+    marginBottom: 28,
+  },
+  photoPlaceholder: {
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    borderWidth: 3,
+    borderColor: colors.primaryBorder,
+    backgroundColor: colors.primaryBg,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  photoImg: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+  },
+  field: {
+    marginBottom: 20,
+  },
+  label: {
+    fontSize: 12,
+    fontFamily: fonts.bold,
+    color: colors.primary,
+    textTransform: 'uppercase',
+    letterSpacing: 0.8,
+    marginBottom: 8,
+  },
+  input: {
+    backgroundColor: colors.background,
+    borderRadius: 14,
+    padding: 14,
+    paddingHorizontal: 16,
+    fontSize: 16,
+    fontFamily: fonts.regular,
+    borderWidth: 2,
+    borderColor: colors.primaryBgInput,
+    color: colors.text,
+  },
+  card: {
+    backgroundColor: colors.cardBg,
+    borderRadius: 16,
+    padding: 20,
+    borderWidth: 1,
+    borderColor: colors.border,
+    marginBottom: 20,
+  },
+  cardLabel: {
+    fontSize: 12,
+    color: colors.textMuted,
+    fontFamily: fonts.semibold,
+    textTransform: 'uppercase',
+    letterSpacing: 0.8,
+  },
+  cardValue: {
+    fontSize: 16,
+    color: colors.text,
+    fontFamily: fonts.medium,
+    marginTop: 4,
+  },
+  saveButton: {
+    backgroundColor: colors.primary,
+    borderRadius: 16,
+    padding: 16,
+    alignItems: 'center',
+    marginBottom: 12,
+    shadowColor: colors.primary,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.3,
+    shadowRadius: 20,
+    elevation: 4,
+  },
+  saveButtonDisabled: {
+    opacity: 0.6,
+  },
+  saveText: {
+    color: '#FFF',
+    fontSize: 16,
+    fontFamily: fonts.bold,
+  },
+  logoutButton: {
+    backgroundColor: colors.primary,
+    borderRadius: 12,
+    padding: 16,
+    alignItems: 'center',
+  },
+  logoutText: {
+    color: '#FFF',
+    fontSize: 16,
+    fontFamily: fonts.semibold,
+  },
+  footer: {
+    textAlign: 'center',
+    color: colors.textLight,
+    marginTop: 'auto',
+    paddingBottom: 16,
+    fontSize: 13,
+    fontFamily: fonts.regular,
+  },
+});

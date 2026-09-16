@@ -1,6 +1,6 @@
 import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
-import { Medication } from '../types';
+import { Medication } from '@/types';
 
 const isExpoGo = Constants.appOwnership === 'expo';
 
@@ -16,7 +16,7 @@ if (!isExpoGo) {
   });
 }
 
-export async function requestPermissions(): Promise<boolean> {
+async function requestPermissions(): Promise<boolean> {
   if (isExpoGo) return false;
   const { status: existing } = await Notifications.getPermissionsAsync();
   if (existing === 'granted') return true;

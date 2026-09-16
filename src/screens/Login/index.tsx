@@ -4,15 +4,19 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  StyleSheet,
+  TouchableWithoutFeedback,
   Alert,
+  Keyboard,
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
 import { Image } from 'expo-image';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useAuth } from '../contexts/AuthContext';
-import { colors, fonts } from '../theme';
+
+import { useAuth } from '@/contexts/AuthContext';
+import { colors } from '@/theme';
+import { catLogin } from '@/assets';
+import { styles } from './styles';
 
 export default function LoginScreen() {
   const { signIn, signUp } = useAuth();
@@ -44,12 +48,13 @@ export default function LoginScreen() {
   return (
     <KeyboardAvoidingView
       style={[styles.container, { paddingTop: insets.top }]}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      behavior="padding"
     >
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <View style={styles.content}>
         <View style={styles.photoContainer}>
           <Image
-            source={require('../../assets/cat-login.png')}
+            source={catLogin}
             style={styles.photoImg}
             contentFit="cover"
             transition={200}
@@ -96,88 +101,7 @@ export default function LoginScreen() {
           </Text>
         </TouchableOpacity>
       </View>
+      </TouchableWithoutFeedback>
     </KeyboardAvoidingView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.background,
-  },
-  content: {
-    flex: 1,
-    justifyContent: 'center',
-    padding: 32,
-  },
-  photoContainer: {
-    alignSelf: 'center',
-    marginBottom: 12,
-    width: 88,
-    height: 88,
-    borderRadius: 44,
-    borderWidth: 2.5,
-    borderColor: colors.primaryBorder,
-    backgroundColor: colors.primaryBg,
-    justifyContent: 'center',
-    alignItems: 'center',
-    overflow: 'hidden',
-  },
-  photoImg: {
-    width: 88,
-    height: 88,
-    borderRadius: 44,
-  },
-  title: {
-    fontSize: 32,
-    fontFamily: fonts.bold,
-    textAlign: 'center',
-    color: colors.text,
-    marginBottom: 4,
-  },
-  subtitle: {
-    fontSize: 14,
-    textAlign: 'center',
-    color: colors.textMuted,
-    fontFamily: fonts.regular,
-    marginBottom: 32,
-  },
-  input: {
-    backgroundColor: colors.cardBg,
-    borderRadius: 14,
-    padding: 16,
-    fontSize: 16,
-    fontFamily: fonts.regular,
-    marginBottom: 12,
-    borderWidth: 2,
-    borderColor: colors.primaryBgInput,
-    color: colors.text,
-  },
-  button: {
-    backgroundColor: colors.primary,
-    borderRadius: 16,
-    padding: 16,
-    alignItems: 'center',
-    marginTop: 8,
-    shadowColor: colors.primary,
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.3,
-    shadowRadius: 20,
-    elevation: 4,
-  },
-  buttonDisabled: {
-    opacity: 0.6,
-  },
-  buttonText: {
-    color: '#FFF',
-    fontSize: 16,
-    fontFamily: fonts.bold,
-  },
-  switchText: {
-    color: colors.primary,
-    textAlign: 'center',
-    marginTop: 16,
-    fontSize: 14,
-    fontFamily: fonts.medium,
-  },
-});
