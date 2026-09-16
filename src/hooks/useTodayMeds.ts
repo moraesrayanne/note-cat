@@ -36,7 +36,7 @@ export function useTodayMeds() {
       medications.map((med) => ({
         medication: med,
         log: logs.find((l) => l.medication_id === med.id) ?? null,
-      }))
+      })),
     );
     setLoading(false);
     syncAllNotifications(medications);
@@ -45,7 +45,7 @@ export function useTodayMeds() {
   useFocusEffect(
     useCallback(() => {
       loadToday();
-    }, [loadToday])
+    }, [loadToday]),
   );
 
   const toggleMed = async (item: TodayMed) => {
@@ -73,7 +73,7 @@ export function useTodayMeds() {
             taken_at: new Date().toISOString(),
           } as MedicationLog,
         };
-      })
+      }),
     );
 
     try {

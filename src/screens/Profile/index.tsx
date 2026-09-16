@@ -61,62 +61,56 @@ export default function ProfileScreen() {
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-    <View style={[styles.container, { paddingTop: insets.top }]}>
-      <ScreenHeader
-        title="Perfil"
-        subtitle="Informações do gatinho"
-        style={styles.header}
-      />
+      <View style={[styles.container, { paddingTop: insets.top }]}>
+        <ScreenHeader title="Perfil" subtitle="Informações do gatinho" style={styles.header} />
 
-      <View style={styles.photoContainer}>
-        <View style={styles.photoPlaceholder}>
-          <Image
-            source={catIcon}
-            style={styles.photoImg}
-            contentFit="cover"
-            transition={200}
-            placeholder={{ blurhash: CAT_ICON_BLURHASH }}
+        <View style={styles.photoContainer}>
+          <View style={styles.photoPlaceholder}>
+            <Image
+              source={catIcon}
+              style={styles.photoImg}
+              contentFit="cover"
+              transition={200}
+              placeholder={{ blurhash: CAT_ICON_BLURHASH }}
+            />
+          </View>
+        </View>
+
+        <View style={styles.field}>
+          <Text style={styles.label}>Nome do gatinho</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Ex: Baden"
+            placeholderTextColor={colors.textMuted}
+            value={localName}
+            onChangeText={(text) => {
+              setLocalName(text);
+              setEditing(true);
+            }}
           />
         </View>
-      </View>
 
-      <View style={styles.field}>
-        <Text style={styles.label}>Nome do gatinho</Text>
-        <TextInput
-          style={styles.input}
-          placeholder='Ex: Baden'
-          placeholderTextColor={colors.textMuted}
-          value={localName}
-          onChangeText={(text) => {
-            setLocalName(text);
-            setEditing(true);
-          }}
-        />
-      </View>
+        <View style={styles.card}>
+          <Text style={styles.cardLabel}>Conta</Text>
+          <Text style={styles.cardValue}>{user?.email}</Text>
+        </View>
 
-      <View style={styles.card}>
-        <Text style={styles.cardLabel}>Conta</Text>
-        <Text style={styles.cardValue}>{user?.email}</Text>
-      </View>
+        {editing && (
+          <TouchableOpacity
+            style={[styles.saveButton, saving && styles.saveButtonDisabled]}
+            onPress={handleSave}
+            disabled={saving}
+          >
+            <Text style={styles.saveText}>{saving ? 'Salvando...' : 'Salvar perfil'}</Text>
+          </TouchableOpacity>
+        )}
 
-      {editing && (
-        <TouchableOpacity
-          style={[styles.saveButton, saving && styles.saveButtonDisabled]}
-          onPress={handleSave}
-          disabled={saving}
-        >
-          <Text style={styles.saveText}>
-            {saving ? 'Salvando...' : 'Salvar perfil'}
-          </Text>
+        <TouchableOpacity style={styles.logoutButton} onPress={handleSignOut}>
+          <Text style={styles.logoutText}>Sair da conta</Text>
         </TouchableOpacity>
-      )}
 
-      <TouchableOpacity style={styles.logoutButton} onPress={handleSignOut}>
-        <Text style={styles.logoutText}>Sair da conta</Text>
-      </TouchableOpacity>
-
-      <Text style={styles.footer}>Note Cat v1.0</Text>
-    </View>
+        <Text style={styles.footer}>Note Cat v1.0</Text>
+      </View>
     </TouchableWithoutFeedback>
   );
 }

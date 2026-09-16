@@ -1,11 +1,5 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import {
-  View,
-  Text,
-  FlatList,
-  TouchableOpacity,
-  RefreshControl,
-} from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, RefreshControl } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -58,10 +52,7 @@ export default function DiaryScreen({ navigation }: Props) {
     setRefreshing(false);
   };
 
-  const hasTodayEntry = useMemo(
-    () => entries.some((e) => e.date === getTodayDate()),
-    [entries],
-  );
+  const hasTodayEntry = useMemo(() => entries.some((e) => e.date === getTodayDate()), [entries]);
 
   const renderEntry = ({ item }: { item: DiaryEntry }) => {
     const hasEnergy = item.energy_level != null;
@@ -85,12 +76,10 @@ export default function DiaryScreen({ navigation }: Props) {
           {/* Date row inside the card */}
           <View style={styles.cardDateRow}>
             <View style={styles.sectionLeft}>
-              <Text style={styles.sectionDateText}>
-                {formatDateLabel(item.date)}
-              </Text>
+              <Text style={styles.sectionDateText}>{formatDateLabel(item.date)}</Text>
               {isToday && <View style={styles.sectionDot} />}
             </View>
-            <Feather name='chevron-right' size={18} color={colors.textLight} />
+            <Feather name="chevron-right" size={18} color={colors.textLight} />
           </View>
 
           {/* Mini card: Alimentação (salmon) */}
@@ -111,9 +100,7 @@ export default function DiaryScreen({ navigation }: Props) {
                 <View style={[styles.gridMiniCard, styles.disposicaoCard]}>
                   <Text style={styles.gridEmoji}>{emoji}</Text>
                   <Text style={styles.gridCellLabel}>Disposição</Text>
-                  <Text style={[styles.gridCellValue, energyStyle]}>
-                    {label}
-                  </Text>
+                  <Text style={[styles.gridCellValue, energyStyle]}>{label}</Text>
                 </View>
               ) : null}
 
@@ -121,9 +108,7 @@ export default function DiaryScreen({ navigation }: Props) {
                 <View
                   style={[
                     styles.gridMiniCard,
-                    item.used_litter_box
-                      ? styles.caixinhaCardGreen
-                      : styles.caixinhaCardRed,
+                    item.used_litter_box ? styles.caixinhaCardGreen : styles.caixinhaCardRed,
                   ]}
                 >
                   <Feather
@@ -135,9 +120,7 @@ export default function DiaryScreen({ navigation }: Props) {
                   <Text
                     style={[
                       styles.gridCellValue,
-                      item.used_litter_box
-                        ? styles.gridCellValueGreen
-                        : styles.gridCellValueBad,
+                      item.used_litter_box ? styles.gridCellValueGreen : styles.gridCellValueBad,
                     ]}
                   >
                     {item.used_litter_box ? 'Usou' : 'Não usou'}
@@ -162,7 +145,7 @@ export default function DiaryScreen({ navigation }: Props) {
           {item.notes ? (
             <View style={styles.notesMiniCard}>
               <Feather
-                name='message-circle'
+                name="message-circle"
                 size={14}
                 color={colors.primary}
                 style={{ marginTop: 2, opacity: 0.75 }}
@@ -178,26 +161,19 @@ export default function DiaryScreen({ navigation }: Props) {
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
       <View style={styles.headerRow}>
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => navigation.goBack()}
-        >
+        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
           <Text style={styles.backArrow}>‹</Text>
         </TouchableOpacity>
         <View style={styles.headerTexts}>
           <Text style={styles.headerTitle}>Diário</Text>
-          <Text style={styles.headerSubtitle}>
-            Acompanhamento diário do {catName}
-          </Text>
+          <Text style={styles.headerSubtitle}>Acompanhamento diário do {catName}</Text>
         </View>
         <TouchableOpacity
           style={[styles.addButton, hasTodayEntry && styles.addButtonDisabled]}
-          onPress={() =>
-            !hasTodayEntry && navigation.navigate('AddDiaryEntry', {})
-          }
+          onPress={() => !hasTodayEntry && navigation.navigate('AddDiaryEntry', {})}
           activeOpacity={hasTodayEntry ? 1 : 0.8}
         >
-          <Feather name='plus' size={20} color='#FFF' />
+          <Feather name="plus" size={20} color="#FFF" />
         </TouchableOpacity>
       </View>
 
@@ -205,9 +181,7 @@ export default function DiaryScreen({ navigation }: Props) {
         <View style={styles.emptyContainer}>
           <Text style={styles.emptyEmoji}>📖</Text>
           <Text style={styles.emptyText}>Nenhum registro ainda</Text>
-          <Text style={styles.emptySubtext}>
-            Comece registrando o dia a dia do {catName}
-          </Text>
+          <Text style={styles.emptySubtext}>Comece registrando o dia a dia do {catName}</Text>
           <TouchableOpacity
             style={styles.emptyButton}
             onPress={() => navigation.navigate('AddDiaryEntry', {})}
@@ -221,9 +195,7 @@ export default function DiaryScreen({ navigation }: Props) {
           keyExtractor={(item) => item.id}
           renderItem={renderEntry}
           contentContainerStyle={styles.list}
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
           showsVerticalScrollIndicator={false}
           ListFooterComponent={<View style={{ height: insets.bottom + 16 }} />}
         />

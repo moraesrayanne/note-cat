@@ -13,7 +13,20 @@ import { styles, ITEM_WIDTH } from './styles';
 const INITIAL_DAYS = 10;
 const MORE_DAYS_BATCH = 7;
 const WEEKDAYS_SHORT = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
-const MONTHS_SHORT = ['JAN', 'FEV', 'MAR', 'ABR', 'MAI', 'JUN', 'JUL', 'AGO', 'SET', 'OUT', 'NOV', 'DEZ'];
+const MONTHS_SHORT = [
+  'JAN',
+  'FEV',
+  'MAR',
+  'ABR',
+  'MAI',
+  'JUN',
+  'JUL',
+  'AGO',
+  'SET',
+  'OUT',
+  'NOV',
+  'DEZ',
+];
 
 export interface DotData {
   taken: number;
@@ -39,7 +52,13 @@ function generateDays(count: number): string[] {
   return days;
 }
 
-export function DateStrip({ selectedDate, onSelect, dotMap = {}, onLoadMoreDays, maxDays }: DateStripProps) {
+export function DateStrip({
+  selectedDate,
+  onSelect,
+  dotMap = {},
+  onLoadMoreDays,
+  maxDays,
+}: DateStripProps) {
   const scrollRef = useRef<ScrollView>(null);
   const today = toDateStr(new Date());
   const [daysToShow, setDaysToShow] = useState(INITIAL_DAYS);
@@ -84,7 +103,7 @@ export function DateStrip({ selectedDate, onSelect, dotMap = {}, onLoadMoreDays,
 
     if (scrollX.current < ITEM_WIDTH && !pendingExpand.current && canLoadMore) {
       pendingExpand.current = true;
-      setDaysToShow(prev => {
+      setDaysToShow((prev) => {
         const next = prev + MORE_DAYS_BATCH;
         return maxDays !== undefined ? Math.min(next, maxDays) : next;
       });
@@ -114,10 +133,16 @@ export function DateStrip({ selectedDate, onSelect, dotMap = {}, onLoadMoreDays,
     return (
       <View style={styles.dots}>
         {Array.from({ length: displayTaken }).map((_, i) => (
-          <View key={`t${i}`} style={[styles.dot, isSelected ? styles.dotTakenSelected : styles.dotTaken]} />
+          <View
+            key={`t${i}`}
+            style={[styles.dot, isSelected ? styles.dotTakenSelected : styles.dotTaken]}
+          />
         ))}
         {Array.from({ length: displayMissed }).map((_, i) => (
-          <View key={`m${i}`} style={[styles.dot, isSelected ? styles.dotMissedSelected : styles.dotMissed]} />
+          <View
+            key={`m${i}`}
+            style={[styles.dot, isSelected ? styles.dotMissedSelected : styles.dotMissed]}
+          />
         ))}
       </View>
     );
@@ -156,15 +181,9 @@ export function DateStrip({ selectedDate, onSelect, dotMap = {}, onLoadMoreDays,
             onPress={() => onSelect(date)}
             activeOpacity={0.7}
           >
-            <Text style={[styles.weekday, isSelected && styles.textSelected]}>
-              {weekday}
-            </Text>
-            <Text style={[styles.day, isSelected && styles.textSelected]}>
-              {dayNum}
-            </Text>
-            <Text style={[styles.month, isSelected && styles.textSelected]}>
-              {monthStr}
-            </Text>
+            <Text style={[styles.weekday, isSelected && styles.textSelected]}>{weekday}</Text>
+            <Text style={[styles.day, isSelected && styles.textSelected]}>{dayNum}</Text>
+            <Text style={[styles.month, isSelected && styles.textSelected]}>{monthStr}</Text>
             {renderDots(date, isSelected)}
           </TouchableOpacity>
         );

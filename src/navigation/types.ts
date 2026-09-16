@@ -9,8 +9,8 @@ export type RootStackParamList = {
 
 export type TabParamList = {
   Hoje: undefined;
-  'Remédios': undefined;
+  Remédios: undefined;
   Adicionar: undefined;
-  'Histórico': undefined;
+  Histórico: undefined;
   Perfil: undefined;
 };

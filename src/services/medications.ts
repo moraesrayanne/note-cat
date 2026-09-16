@@ -61,12 +61,7 @@ export async function saveMedication(
   editingId?: string,
 ) {
   if (editingId) {
-    return supabase
-      .from('medications')
-      .update(data)
-      .eq('id', editingId)
-      .select()
-      .single();
+    return supabase.from('medications').update(data).eq('id', editingId).select().single();
   }
   return supabase.from('medications').insert(data).select().single();
 }

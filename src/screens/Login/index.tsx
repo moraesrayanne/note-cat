@@ -33,9 +33,7 @@ export default function LoginScreen() {
     }
 
     setLoading(true);
-    const { error } = isSignUp
-      ? await signUp(email, password)
-      : await signIn(email, password);
+    const { error } = isSignUp ? await signUp(email, password) : await signIn(email, password);
     setLoading(false);
 
     if (error) {
@@ -46,61 +44,56 @@ export default function LoginScreen() {
   };
 
   return (
-    <KeyboardAvoidingView
-      style={[styles.container, { paddingTop: insets.top }]}
-      behavior="padding"
-    >
+    <KeyboardAvoidingView style={[styles.container, { paddingTop: insets.top }]} behavior="padding">
       <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-      <View style={styles.content}>
-        <View style={styles.photoContainer}>
-          <Image
-            source={catLogin}
-            style={styles.photoImg}
-            contentFit="cover"
-            transition={200}
-            placeholder={{ blurhash: 'LKO2?U%2Tw=w]~RBVZRi};RPxuwH' }}
+        <View style={styles.content}>
+          <View style={styles.photoContainer}>
+            <Image
+              source={catLogin}
+              style={styles.photoImg}
+              contentFit="cover"
+              transition={200}
+              placeholder={{ blurhash: 'LKO2?U%2Tw=w]~RBVZRi};RPxuwH' }}
+            />
+          </View>
+          <Text style={styles.title}>Note Cat</Text>
+          <Text style={styles.subtitle}>Controle de medicamentos do seu gato</Text>
+
+          <TextInput
+            style={styles.input}
+            placeholder="Email"
+            placeholderTextColor={colors.textMuted}
+            value={email}
+            onChangeText={setEmail}
+            keyboardType="email-address"
+            autoCapitalize="none"
           />
+
+          <TextInput
+            style={styles.input}
+            placeholder="Senha"
+            placeholderTextColor={colors.textMuted}
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry
+          />
+
+          <TouchableOpacity
+            style={[styles.button, loading && styles.buttonDisabled]}
+            onPress={handleSubmit}
+            disabled={loading}
+          >
+            <Text style={styles.buttonText}>
+              {loading ? 'Aguarde...' : isSignUp ? 'Criar conta' : 'Entrar'}
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={() => setIsSignUp(!isSignUp)}>
+            <Text style={styles.switchText}>
+              {isSignUp ? 'Já tem conta? Entrar' : 'Não tem conta? Criar'}
+            </Text>
+          </TouchableOpacity>
         </View>
-        <Text style={styles.title}>Note Cat</Text>
-        <Text style={styles.subtitle}>
-          Controle de medicamentos do seu gato
-        </Text>
-
-        <TextInput
-          style={styles.input}
-          placeholder='Email'
-          placeholderTextColor={colors.textMuted}
-          value={email}
-          onChangeText={setEmail}
-          keyboardType='email-address'
-          autoCapitalize='none'
-        />
-
-        <TextInput
-          style={styles.input}
-          placeholder='Senha'
-          placeholderTextColor={colors.textMuted}
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry
-        />
-
-        <TouchableOpacity
-          style={[styles.button, loading && styles.buttonDisabled]}
-          onPress={handleSubmit}
-          disabled={loading}
-        >
-          <Text style={styles.buttonText}>
-            {loading ? 'Aguarde...' : isSignUp ? 'Criar conta' : 'Entrar'}
-          </Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity onPress={() => setIsSignUp(!isSignUp)}>
-          <Text style={styles.switchText}>
-            {isSignUp ? 'Já tem conta? Entrar' : 'Não tem conta? Criar'}
-          </Text>
-        </TouchableOpacity>
-      </View>
       </TouchableWithoutFeedback>
     </KeyboardAvoidingView>
   );

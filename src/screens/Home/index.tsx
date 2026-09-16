@@ -1,12 +1,5 @@
 import React, { useRef } from 'react';
-import {
-  View,
-  Text,
-  ScrollView,
-  TouchableOpacity,
-  RefreshControl,
-  Animated,
-} from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, RefreshControl, Animated } from 'react-native';
 import { Image } from 'expo-image';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -81,7 +74,10 @@ export default function HomeScreen() {
 
   const renderTakenItem = (item: TodayMed) => {
     const takenTime = item.log
-      ? new Date(item.log.taken_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
+      ? new Date(item.log.taken_at).toLocaleTimeString('pt-BR', {
+          hour: '2-digit',
+          minute: '2-digit',
+        })
       : '';
     return (
       <TouchableOpacity
@@ -158,7 +154,8 @@ export default function HomeScreen() {
               {meds.length} remédio{meds.length !== 1 ? 's' : ''}
             </Text>
             <Text style={styles.statsDetail}>
-              {taken.length} tomado{taken.length !== 1 ? 's' : ''} · {pending.length} pendente{pending.length !== 1 ? 's' : ''}
+              {taken.length} tomado{taken.length !== 1 ? 's' : ''} · {pending.length} pendente
+              {pending.length !== 1 ? 's' : ''}
             </Text>
             <View style={styles.progressBg}>
               <View style={[styles.progressFill, { width: `${pct}%` }]} />

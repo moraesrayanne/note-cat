@@ -2,17 +2,15 @@ import React from 'react';
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { createNativeStackNavigator, NativeStackNavigationProp } from '@react-navigation/native-stack';
+import {
+  createNativeStackNavigator,
+  NativeStackNavigationProp,
+} from '@react-navigation/native-stack';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { colors, fonts } from '@/theme';
 import { RootStackParamList, TabParamList } from '@/navigation/types';
-import {
-  HomeIcon,
-  HistoryIcon,
-  MedsIcon,
-  ProfileIcon,
-} from '@/components/TabIcons';
+import { HomeIcon, HistoryIcon, MedsIcon, ProfileIcon } from '@/components/TabIcons';
 import HomeScreen from '@/screens/Home';
 import MedicationsScreen from '@/screens/Medications';
 import AddMedicationScreen from '@/screens/AddMedication';
@@ -24,13 +22,10 @@ import AddDiaryEntryScreen from '@/screens/AddDiaryEntry';
 const Tab = createBottomTabNavigator<TabParamList>();
 const RootStack = createNativeStackNavigator<RootStackParamList>();
 
-const TAB_ICON_MAP: Record<
-  string,
-  React.FC<{ color: string; filled?: boolean }>
-> = {
+const TAB_ICON_MAP: Record<string, React.FC<{ color: string; filled?: boolean }>> = {
   Hoje: HomeIcon,
-  'Histórico': HistoryIcon,
-  'Remédios': MedsIcon,
+  Histórico: HistoryIcon,
+  Remédios: MedsIcon,
   Perfil: ProfileIcon,
 };
 
@@ -85,18 +80,10 @@ function MainTabs() {
         },
       })}
     >
+      <Tab.Screen name="Hoje" component={HomeScreen} options={{ headerShown: false }} />
+      <Tab.Screen name="Remédios" component={MedicationsScreen} options={{ headerShown: false }} />
       <Tab.Screen
-        name='Hoje'
-        component={HomeScreen}
-        options={{ headerShown: false }}
-      />
-      <Tab.Screen
-        name='Remédios'
-        component={MedicationsScreen}
-        options={{ headerShown: false }}
-      />
-      <Tab.Screen
-        name='Adicionar'
+        name="Adicionar"
         component={DummyScreen}
         options={{
           headerShown: false,
@@ -105,16 +92,8 @@ function MainTabs() {
           tabBarButton: () => <AddButton />,
         }}
       />
-      <Tab.Screen
-        name='Histórico'
-        component={HistoryScreen}
-        options={{ headerShown: false }}
-      />
-      <Tab.Screen
-        name='Perfil'
-        component={ProfileScreen}
-        options={{ headerShown: false }}
-      />
+      <Tab.Screen name="Histórico" component={HistoryScreen} options={{ headerShown: false }} />
+      <Tab.Screen name="Perfil" component={ProfileScreen} options={{ headerShown: false }} />
     </Tab.Navigator>
   );
 }
@@ -123,19 +102,10 @@ export default function AppNavigator() {
   return (
     <NavigationContainer>
       <RootStack.Navigator screenOptions={{ headerShown: false }}>
-        <RootStack.Screen name='Tabs' component={MainTabs} />
-        <RootStack.Screen
-          name='AddMedication'
-          component={AddMedicationScreen}
-        />
-        <RootStack.Screen
-          name='Diary'
-          component={DiaryScreen}
-        />
-        <RootStack.Screen
-          name='AddDiaryEntry'
-          component={AddDiaryEntryScreen}
-        />
+        <RootStack.Screen name="Tabs" component={MainTabs} />
+        <RootStack.Screen name="AddMedication" component={AddMedicationScreen} />
+        <RootStack.Screen name="Diary" component={DiaryScreen} />
+        <RootStack.Screen name="AddDiaryEntry" component={AddDiaryEntryScreen} />
       </RootStack.Navigator>
     </NavigationContainer>
   );

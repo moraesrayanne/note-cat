@@ -1,10 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import {
-  View,
-  Text,
-  FlatList,
-  TouchableOpacity,
-} from 'react-native';
+import { View, Text, FlatList, TouchableOpacity } from 'react-native';
 
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
@@ -41,7 +36,7 @@ export default function MedicationsScreen() {
   useFocusEffect(
     useCallback(() => {
       loadMeds();
-    }, [loadMeds])
+    }, [loadMeds]),
   );
 
   const deleteMed = async (med: Medication) => {
@@ -58,15 +53,24 @@ export default function MedicationsScreen() {
       activeOpacity={0.7}
     >
       <View style={[styles.medIcon, !item.active && styles.medIconInactive]}>
-        <FontAwesome6 name="pills" size={18} color={item.active ? colors.primary : colors.textMuted} />
+        <FontAwesome6
+          name="pills"
+          size={18}
+          color={item.active ? colors.primary : colors.textMuted}
+        />
       </View>
       <View style={styles.cardContent}>
         <View style={styles.nameRow}>
-          <Text style={[styles.medName, !item.active && styles.textInactive]}>
-            {item.name}
-          </Text>
-          <View style={[styles.statusTag, item.active ? styles.statusActive : styles.statusInactive]}>
-            <Text style={[styles.statusTagText, item.active ? styles.statusActiveText : styles.statusInactiveText]}>
+          <Text style={[styles.medName, !item.active && styles.textInactive]}>{item.name}</Text>
+          <View
+            style={[styles.statusTag, item.active ? styles.statusActive : styles.statusInactive]}
+          >
+            <Text
+              style={[
+                styles.statusTagText,
+                item.active ? styles.statusActiveText : styles.statusInactiveText,
+              ]}
+            >
               {item.active ? 'Ativo' : 'Inativo'}
             </Text>
           </View>
@@ -77,25 +81,24 @@ export default function MedicationsScreen() {
       </View>
       {confirmDelete === item.id ? (
         <View style={styles.confirmRow}>
-          <TouchableOpacity
-            style={styles.confirmDeleteBtn}
-            onPress={() => deleteMed(item)}
-          >
+          <TouchableOpacity style={styles.confirmDeleteBtn} onPress={() => deleteMed(item)}>
             <Text style={styles.confirmDeleteText}>Excluir</Text>
           </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.confirmCancelBtn}
-            onPress={() => setConfirmDelete(null)}
-          >
+          <TouchableOpacity style={styles.confirmCancelBtn} onPress={() => setConfirmDelete(null)}>
             <Text style={styles.confirmCancelText}>Não</Text>
           </TouchableOpacity>
         </View>
       ) : (
-        <TouchableOpacity
-          style={styles.deleteIconBtn}
-          onPress={() => setConfirmDelete(item.id)}
-        >
-          <Svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke={colors.textLight} strokeWidth={2} strokeLinecap="round">
+        <TouchableOpacity style={styles.deleteIconBtn} onPress={() => setConfirmDelete(item.id)}>
+          <Svg
+            width={18}
+            height={18}
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke={colors.textLight}
+            strokeWidth={2}
+            strokeLinecap="round"
+          >
             <Path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m3 0v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6h14" />
           </Svg>
         </TouchableOpacity>
@@ -107,7 +110,7 @@ export default function MedicationsScreen() {
     <View style={[styles.container, { paddingTop: insets.top }]}>
       <ScreenHeader
         title="Remédios"
-        subtitle={`${meds.filter(m => m.active).length} ativo${meds.filter(m => m.active).length !== 1 ? 's' : ''} · ${meds.length} cadastrado${meds.length !== 1 ? 's' : ''}`}
+        subtitle={`${meds.filter((m) => m.active).length} ativo${meds.filter((m) => m.active).length !== 1 ? 's' : ''} · ${meds.length} cadastrado${meds.length !== 1 ? 's' : ''}`}
         style={styles.header}
       />
 

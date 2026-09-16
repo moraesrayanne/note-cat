@@ -14,14 +14,14 @@ Aplicativo mobile para controle de medicamentos de gatos. Registre os remédios 
 
 ## Stack
 
-| Camada | Tecnologia |
-|---|---|
-| Framework | [Expo](https://expo.dev) ~57 / React Native 0.86 |
-| Linguagem | TypeScript |
-| Backend / Auth | [Supabase](https://supabase.com) |
-| Navegação | React Navigation v7 (stack + bottom tabs) |
-| Notificações | Expo Notifications |
-| Fontes | DM Sans (Expo Google Fonts) |
+| Camada         | Tecnologia                                       |
+| -------------- | ------------------------------------------------ |
+| Framework      | [Expo](https://expo.dev) ~57 / React Native 0.86 |
+| Linguagem      | TypeScript                                       |
+| Backend / Auth | [Supabase](https://supabase.com)                 |
+| Navegação      | React Navigation v7 (stack + bottom tabs)        |
+| Notificações   | Expo Notifications                               |
+| Fontes         | DM Sans (Expo Google Fonts)                      |
 
 ---
 

@@ -22,9 +22,7 @@ export function ProfileProvider({ children }: { children: React.ReactNode }) {
   }, [user]);
 
   return (
-    <ProfileContext.Provider value={{ catName, setCatName }}>
-      {children}
-    </ProfileContext.Provider>
+    <ProfileContext.Provider value={{ catName, setCatName }}>{children}</ProfileContext.Provider>
   );
 }
 

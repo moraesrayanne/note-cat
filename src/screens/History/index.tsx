@@ -1,9 +1,5 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import {
-  View,
-  Text,
-  FlatList,
-} from 'react-native';
+import { View, Text, FlatList } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
 import { Feather } from '@expo/vector-icons';
@@ -14,7 +10,13 @@ import { DateStrip, DotData } from '@/components/DateStrip';
 import { MedicationLog } from '@/types';
 import { ListSkeleton } from '@/components/Skeleton';
 import { fetchMedicationLogs, fetchActiveMedications } from '@/services/medications';
-import { calcMaxHistoryDays, formatDateLabel, formatTimeFromISO, toDateStr, getTodayDate } from '@/utils/date';
+import {
+  calcMaxHistoryDays,
+  formatDateLabel,
+  formatTimeFromISO,
+  toDateStr,
+  getTodayDate,
+} from '@/utils/date';
 import { styles } from './styles';
 
 const INITIAL_DAYS = 10;
@@ -46,22 +48,25 @@ export default function HistoryScreen() {
   useFocusEffect(
     useCallback(() => {
       loadInitialHistory();
-    }, [loadInitialHistory])
+    }, [loadInitialHistory]),
   );
 
-  const handleLoadMoreDays = useCallback(async (fromDate: string) => {
-    if (!user) return;
-    const { data } = await fetchMedicationLogs(user.id, fromDate);
-    setAllLogs(prev => {
-      const existingIds = new Set(prev.map(l => l.id));
-      const newLogs = data.filter(l => !existingIds.has(l.id));
-      return [...prev, ...newLogs];
-    });
-  }, [user]);
+  const handleLoadMoreDays = useCallback(
+    async (fromDate: string) => {
+      if (!user) return;
+      const { data } = await fetchMedicationLogs(user.id, fromDate);
+      setAllLogs((prev) => {
+        const existingIds = new Set(prev.map((l) => l.id));
+        const newLogs = data.filter((l) => !existingIds.has(l.id));
+        return [...prev, ...newLogs];
+      });
+    },
+    [user],
+  );
 
   const maxDays = useMemo(
     () => (user?.created_at ? calcMaxHistoryDays(user.created_at) : INITIAL_DAYS),
-    [user?.created_at]
+    [user?.created_at],
   );
 
   const dotMap = useMemo<Record<string, DotData>>(() => {
@@ -76,7 +81,7 @@ export default function HistoryScreen() {
 
   const selectedLogs = useMemo(
     () => allLogs.filter((log) => log.date === selectedDate),
-    [allLogs, selectedDate]
+    [allLogs, selectedDate],
   );
 
   const selectedLabel = useMemo(() => formatDateLabel(selectedDate), [selectedDate]);
@@ -87,11 +92,10 @@ export default function HistoryScreen() {
         <Feather name="check" size={16} color="#4CAF50" />
       </View>
       <View style={styles.logContent}>
-        <Text style={styles.logMed}>
-          {item.medication?.name ?? 'Medicamento removido'}
-        </Text>
+        <Text style={styles.logMed}>{item.medication?.name ?? 'Medicamento removido'}</Text>
         <Text style={styles.logDose}>
-          {item.medication?.dose ?? ''} · previsto {item.medication?.time ? item.medication.time.substring(0, 5) : '--:--'}
+          {item.medication?.dose ?? ''} · previsto{' '}
+          {item.medication?.time ? item.medication.time.substring(0, 5) : '--:--'}
         </Text>
       </View>
       <Text style={styles.logTime}>{formatTimeFromISO(item.taken_at)}</Text>
@@ -139,9 +143,7 @@ export default function HistoryScreen() {
             <View style={styles.emptyContainer}>
               <Feather name="clipboard" size={40} color="#B59A8E" />
               <Text style={styles.emptyText}>Nenhum registro neste dia</Text>
-              <Text style={styles.emptySubtext}>
-                Marque remédios como tomados na tela Hoje
-              </Text>
+              <Text style={styles.emptySubtext}>Marque remédios como tomados na tela Hoje</Text>
             </View>
           }
         />

@@ -3,7 +3,12 @@ import { View, Animated } from 'react-native';
 import { colors } from '@/theme';
 import { styles } from './styles';
 
-function SkeletonBlock({ width, height, borderRadius = 8, style }: {
+function SkeletonBlock({
+  width,
+  height,
+  borderRadius = 8,
+  style,
+}: {
   width: number | string;
   height: number;
   borderRadius?: number;
@@ -16,7 +21,7 @@ function SkeletonBlock({ width, height, borderRadius = 8, style }: {
       Animated.sequence([
         Animated.timing(opacity, { toValue: 1, duration: 800, useNativeDriver: true }),
         Animated.timing(opacity, { toValue: 0.3, duration: 800, useNativeDriver: true }),
-      ])
+      ]),
     );
     animation.start();
     return () => animation.stop();
@@ -25,7 +30,13 @@ function SkeletonBlock({ width, height, borderRadius = 8, style }: {
   return (
     <Animated.View
       style={[
-        { width: width as any, height, borderRadius, backgroundColor: colors.primaryBgLight, opacity },
+        {
+          width: width as any,
+          height,
+          borderRadius,
+          backgroundColor: colors.primaryBgLight,
+          opacity,
+        },
         style,
       ]}
     />
