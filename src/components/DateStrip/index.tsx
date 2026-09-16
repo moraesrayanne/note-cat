@@ -71,13 +71,6 @@ export function DateStrip({
     onLoadMoreRef.current = onLoadMoreDays;
   }, [onLoadMoreDays]);
 
-  // Clamp daysToShow to maxDays once it becomes known
-  useEffect(() => {
-    if (maxDays !== undefined && daysToShow > maxDays) {
-      setDaysToShow(maxDays);
-    }
-  }, [maxDays]);
-
   const effectiveDays = maxDays !== undefined ? Math.min(daysToShow, maxDays) : daysToShow;
   const days = useMemo(() => generateDays(effectiveDays), [effectiveDays]);
 

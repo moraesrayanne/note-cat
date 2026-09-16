@@ -8,7 +8,6 @@ import {
   Alert,
   Keyboard,
   KeyboardAvoidingView,
-  Platform,
 } from 'react-native';
 import { Image } from 'expo-image';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';

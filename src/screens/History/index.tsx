@@ -64,9 +64,10 @@ export default function HistoryScreen() {
     [user],
   );
 
+  const userCreatedAt = user?.created_at;
   const maxDays = useMemo(
-    () => (user?.created_at ? calcMaxHistoryDays(user.created_at) : INITIAL_DAYS),
-    [user?.created_at],
+    () => (userCreatedAt ? calcMaxHistoryDays(userCreatedAt) : INITIAL_DAYS),
+    [userCreatedAt],
   );
 
   const dotMap = useMemo<Record<string, DotData>>(() => {

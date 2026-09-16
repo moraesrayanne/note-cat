@@ -1,5 +1,6 @@
 const { FlatCompat } = require('@eslint/eslintrc');
 const js = require('@eslint/js');
+const globals = require('globals');
 
 const compat = new FlatCompat({
   baseDirectory: __dirname,
@@ -7,6 +8,10 @@ const compat = new FlatCompat({
 });
 
 module.exports = [
+  {
+    files: ['*.js', '*.cjs'],
+    languageOptions: { globals: globals.node },
+  },
   ...compat.extends('expo'),
   {
     rules: {

@@ -14,6 +14,7 @@ function SkeletonBlock({
   borderRadius?: number;
   style?: any;
 }) {
+  // eslint-disable-next-line react-hooks/refs
   const opacity = useRef(new Animated.Value(0.3)).current;
 
   useEffect(() => {
