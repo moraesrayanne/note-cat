@@ -38,6 +38,6 @@ export const commonStyles = StyleSheet.create({
     fontFamily: fonts.bold,
   },
   saveTextDisabled: {
-    color: '#D4A99E',
+    color: colors.textDisabled,
   },
 });

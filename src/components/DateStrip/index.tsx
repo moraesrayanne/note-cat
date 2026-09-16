@@ -10,7 +10,7 @@ import {
 import { toDateStr } from '@/utils/date';
 import { styles, ITEM_WIDTH } from './styles';
 
-const INITIAL_DAYS = 10;
+export const INITIAL_DAYS = 10;
 const MORE_DAYS_BATCH = 7;
 const WEEKDAYS_SHORT = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
 const MONTHS_SHORT = [

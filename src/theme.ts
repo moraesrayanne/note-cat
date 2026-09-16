@@ -14,6 +14,10 @@ export const colors = {
   successBg: '#ECFFF0',
   error: '#E57373',
   errorBg: '#FFF5F5',
+  mutedBg: '#F0EBE8',
+  cancelBg: '#F0E8E4',
+  switchOff: '#E0D6D0',
+  textDisabled: '#D4A99E',
   border: '#FFE8E0',
   navBorder: '#FFE8E0',
 };

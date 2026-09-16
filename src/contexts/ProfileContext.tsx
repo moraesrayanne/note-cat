@@ -2,6 +2,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 
 import { useAuth } from '@/contexts/AuthContext';
 import { fetchCatName } from '@/services/profile';
+import { DEFAULT_CAT_NAME } from '@/constants/app';
 
 interface ProfileContextType {
   catName: string;
@@ -12,7 +13,7 @@ const ProfileContext = createContext<ProfileContextType>({} as ProfileContextTyp
 
 export function ProfileProvider({ children }: { children: React.ReactNode }) {
   const { user } = useAuth();
-  const [catName, setCatName] = useState('Baden');
+  const [catName, setCatName] = useState(DEFAULT_CAT_NAME);
 
   useEffect(() => {
     if (!user) return;

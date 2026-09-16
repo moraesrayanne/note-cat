@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { View, Text, FlatList, TouchableOpacity } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, RefreshControl, Alert } from 'react-native';
 
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
@@ -25,6 +25,7 @@ export default function MedicationsScreen() {
   const [meds, setMeds] = useState<Medication[]>([]);
   const [loading, setLoading] = useState(true);
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
+  const [refreshing, setRefreshing] = useState(false);
 
   const loadMeds = useCallback(async () => {
     if (!user) return;
@@ -33,6 +34,12 @@ export default function MedicationsScreen() {
     setLoading(false);
   }, [user]);
 
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await loadMeds();
+    setRefreshing(false);
+  };
+
   useFocusEffect(
     useCallback(() => {
       loadMeds();
@@ -40,7 +47,11 @@ export default function MedicationsScreen() {
   );
 
   const deleteMed = async (med: Medication) => {
-    await deactivateMedication(med.id);
+    const { error } = await deactivateMedication(med.id);
+    if (error) {
+      Alert.alert('Erro', 'Não foi possível remover o remédio. Tente novamente.');
+      return;
+    }
     await cancelMedNotification(med.id);
     setConfirmDelete(null);
     loadMeds();
@@ -122,6 +133,7 @@ export default function MedicationsScreen() {
           keyExtractor={(item) => item.id}
           renderItem={renderItem}
           contentContainerStyle={styles.list}
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
           ListEmptyComponent={
             <View style={styles.emptyContainer}>
               <Feather name="inbox" size={40} color={colors.textMuted} />

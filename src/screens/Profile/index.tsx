@@ -18,6 +18,7 @@ import { ScreenHeader } from '@/components/ScreenHeader';
 import { catIcon, CAT_ICON_BLURHASH } from '@/assets';
 import { colors } from '@/theme';
 import { saveProfile } from '@/services/profile';
+import { DEFAULT_CAT_NAME, APP_VERSION } from '@/constants/app';
 import { commonStyles } from '@/styles/common';
 import { styles } from './styles';
 
@@ -40,7 +41,7 @@ export default function ProfileScreen() {
     if (!user) return;
     setSaving(true);
 
-    const trimmed = localName.trim() || 'Baden';
+    const trimmed = localName.trim() || DEFAULT_CAT_NAME;
     const { error } = await saveProfile(user.id, trimmed);
 
     setSaving(false);
@@ -110,7 +111,7 @@ export default function ProfileScreen() {
           <Text style={styles.logoutText}>Sair da conta</Text>
         </TouchableOpacity>
 
-        <Text style={styles.footer}>Note Cat v1.0</Text>
+        <Text style={styles.footer}>{APP_VERSION}</Text>
       </View>
     </TouchableWithoutFeedback>
   );

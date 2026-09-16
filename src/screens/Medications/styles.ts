@@ -43,7 +43,7 @@ export const styles = StyleSheet.create({
     opacity: 0.65,
   },
   medIconInactive: {
-    backgroundColor: '#F0EBE8',
+    backgroundColor: colors.mutedBg,
   },
   cardContent: {
     flex: 1,
@@ -71,7 +71,7 @@ export const styles = StyleSheet.create({
     backgroundColor: colors.successBg,
   },
   statusInactive: {
-    backgroundColor: '#F0EBE8',
+    backgroundColor: colors.mutedBg,
   },
   statusTagText: {
     fontSize: 10,
@@ -108,7 +108,7 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 8,
-    backgroundColor: '#F0E8E4',
+    backgroundColor: colors.cancelBg,
   },
   confirmCancelText: {
     color: colors.text,

@@ -18,6 +18,8 @@ export interface TodayMed {
   log: MedicationLog | null;
 }
 
+const OPTIMISTIC_ID_PREFIX = 'optimistic-';
+
 export function useTodayMeds() {
   const { user } = useAuth();
   const [meds, setMeds] = useState<TodayMed[]>([]);
@@ -66,12 +68,13 @@ export function useTodayMeds() {
         return {
           ...m,
           log: {
-            id: 'optimistic-' + medId,
+            id: OPTIMISTIC_ID_PREFIX + medId,
             medication_id: medId,
             user_id: user.id,
             date: today,
             taken_at: new Date().toISOString(),
-          } as MedicationLog,
+            created_at: '',
+          } satisfies MedicationLog,
         };
       }),
     );

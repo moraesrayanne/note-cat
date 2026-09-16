@@ -161,7 +161,7 @@ export default function AddMedicationScreen({ navigation, route }: Props) {
                   <Switch
                     value={active}
                     onValueChange={setActive}
-                    trackColor={{ false: '#E0D6D0', true: colors.primary }}
+                    trackColor={{ false: colors.switchOff, true: colors.primary }}
                     thumbColor="#FFF"
                   />
                 </View>

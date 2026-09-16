@@ -34,8 +34,8 @@ export default function DiaryScreen({ navigation }: Props) {
 
   const loadEntries = useCallback(async () => {
     if (!user) return;
-    const { data } = await fetchDiaryEntries(user.id);
-    setEntries(data ?? []);
+    const { data, error } = await fetchDiaryEntries(user.id);
+    if (!error) setEntries((data ?? []) as DiaryEntry[]);
     setLoading(false);
   }, [user]);
 

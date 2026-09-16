@@ -4,7 +4,6 @@ import Svg, { Path, Rect } from 'react-native-svg';
 interface IconProps {
   color: string;
   size?: number;
-  filled?: boolean;
 }
 
 export function HomeIcon({ color, size = 22 }: IconProps) {

@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import { View, Text, FlatList } from 'react-native';
+import { View, Text, FlatList, RefreshControl } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
 import { Feather } from '@expo/vector-icons';
@@ -7,7 +7,7 @@ import { Feather } from '@expo/vector-icons';
 import { useAuth } from '@/contexts/AuthContext';
 import { colors } from '@/theme';
 import { ScreenHeader } from '@/components/ScreenHeader';
-import { DateStrip, DotData } from '@/components/DateStrip';
+import { DateStrip, DotData, INITIAL_DAYS } from '@/components/DateStrip';
 import { MedicationLog } from '@/types';
 import { ListSkeleton } from '@/components/Skeleton';
 import { fetchMedicationLogs, fetchActiveMedications } from '@/services/medications';
@@ -20,14 +20,13 @@ import {
 } from '@/utils/date';
 import { styles } from './styles';
 
-const INITIAL_DAYS = 10;
-
 export default function HistoryScreen() {
   const { user } = useAuth();
   const insets = useSafeAreaInsets();
   const [allLogs, setAllLogs] = useState<MedicationLog[]>([]);
   const [totalMeds, setTotalMeds] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [selectedDate, setSelectedDate] = useState(getTodayDate);
 
   const loadInitialHistory = useCallback(async () => {
@@ -36,13 +35,15 @@ export default function HistoryScreen() {
     const since = new Date();
     since.setDate(since.getDate() - INITIAL_DAYS);
 
-    const [{ data: logs }, { data: meds }] = await Promise.all([
+    const [{ data: logs, error: logsError }, { data: meds }] = await Promise.all([
       fetchMedicationLogs(user.id, toDateStr(since)),
       fetchActiveMedications(user.id),
     ]);
 
-    setAllLogs(logs);
-    setTotalMeds(meds.length);
+    if (!logsError) {
+      setAllLogs(logs);
+      setTotalMeds(meds.length);
+    }
     setLoading(false);
   }, [user]);
 
@@ -51,6 +52,12 @@ export default function HistoryScreen() {
       loadInitialHistory();
     }, [loadInitialHistory]),
   );
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await loadInitialHistory();
+    setRefreshing(false);
+  };
 
   const handleLoadMoreDays = useCallback(
     async (fromDate: string) => {
@@ -129,6 +136,7 @@ export default function HistoryScreen() {
           keyExtractor={(item) => item.id}
           renderItem={renderItem}
           contentContainerStyle={styles.list}
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
           ListHeaderComponent={
             selectedLogs.length > 0 ? (
               <View style={styles.dayHeader}>
