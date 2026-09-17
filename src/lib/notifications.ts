@@ -1,11 +1,15 @@
-import * as Notifications from 'expo-notifications';
-import Constants from 'expo-constants';
+import Constants, { ExecutionEnvironment } from 'expo-constants';
+import type * as NotificationsType from 'expo-notifications';
 import { Medication } from '@/types';
 
-const isExpoGo = Constants.appOwnership === 'expo';
+const isExpoGo = Constants.executionEnvironment === ExecutionEnvironment.StoreClient;
+
+let Notifications: typeof NotificationsType | null = null;
 
 if (!isExpoGo) {
-  Notifications.setNotificationHandler({
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  Notifications = require('expo-notifications');
+  Notifications!.setNotificationHandler({
     handleNotification: async () => ({
       shouldShowAlert: true,
       shouldPlaySound: true,
@@ -18,10 +22,10 @@ if (!isExpoGo) {
 
 async function requestPermissions(): Promise<boolean> {
   if (isExpoGo) return false;
-  const { status: existing } = await Notifications.getPermissionsAsync();
+  const { status: existing } = await Notifications!.getPermissionsAsync();
   if (existing === 'granted') return true;
 
-  const { status } = await Notifications.requestPermissionsAsync();
+  const { status } = await Notifications!.requestPermissionsAsync();
   return status === 'granted';
 }
 
@@ -38,7 +42,7 @@ export async function scheduleMedNotification(med: Medication): Promise<void> {
 
   const [hours, minutes] = med.time.substring(0, 5).split(':').map(Number);
 
-  await Notifications.scheduleNotificationAsync({
+  await Notifications!.scheduleNotificationAsync({
     identifier: getMedNotificationId(med.id),
     content: {
       title: `Hora do remédio! 💊`,
@@ -46,7 +50,7 @@ export async function scheduleMedNotification(med: Medication): Promise<void> {
       sound: true,
     },
     trigger: {
-      type: Notifications.SchedulableTriggerInputTypes.DAILY,
+      type: Notifications!.SchedulableTriggerInputTypes.DAILY,
       hour: hours,
       minute: minutes,
     },
@@ -55,7 +59,7 @@ export async function scheduleMedNotification(med: Medication): Promise<void> {
 
 export async function cancelMedNotification(medId: string): Promise<void> {
   if (isExpoGo) return;
-  await Notifications.cancelScheduledNotificationAsync(getMedNotificationId(medId));
+  await Notifications!.cancelScheduledNotificationAsync(getMedNotificationId(medId));
 }
 
 export async function syncAllNotifications(meds: Medication[]): Promise<void> {
@@ -63,7 +67,7 @@ export async function syncAllNotifications(meds: Medication[]): Promise<void> {
   const granted = await requestPermissions();
   if (!granted) return;
 
-  await Notifications.cancelAllScheduledNotificationsAsync();
+  await Notifications!.cancelAllScheduledNotificationsAsync();
 
   for (const med of meds) {
     if (med.active) {
