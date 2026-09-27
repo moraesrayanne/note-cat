@@ -61,6 +61,16 @@ export const styles = StyleSheet.create({
     minHeight: 90,
     paddingTop: 14,
   },
+  dateButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  dateButtonText: {
+    fontSize: 15,
+    fontFamily: fonts.regular,
+    color: colors.text,
+  },
   toggleRow: {
     flexDirection: 'row',
     gap: 10,

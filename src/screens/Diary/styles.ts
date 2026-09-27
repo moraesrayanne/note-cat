@@ -41,11 +41,6 @@ export const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 4,
   },
-  addButtonDisabled: {
-    backgroundColor: colors.primaryBgInput,
-    shadowOpacity: 0,
-    elevation: 0,
-  },
   list: {
     paddingHorizontal: 16,
     paddingTop: 12,

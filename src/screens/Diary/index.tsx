@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { View, Text, FlatList, TouchableOpacity, RefreshControl } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
@@ -50,8 +50,6 @@ export default function DiaryScreen({ navigation }: Props) {
     await loadEntries();
     setRefreshing(false);
   };
-
-  const hasTodayEntry = useMemo(() => entries.some((e) => e.date === getTodayDate()), [entries]);
 
   const renderEntry = ({ item }: { item: DiaryEntry }) => {
     const hasEnergy = item.energy_level != null;
@@ -168,9 +166,9 @@ export default function DiaryScreen({ navigation }: Props) {
           <Text style={styles.headerSubtitle}>Acompanhamento diário do {catName}</Text>
         </View>
         <TouchableOpacity
-          style={[styles.addButton, hasTodayEntry && styles.addButtonDisabled]}
-          onPress={() => !hasTodayEntry && navigation.navigate('AddDiaryEntry', {})}
-          activeOpacity={hasTodayEntry ? 1 : 0.8}
+          style={styles.addButton}
+          onPress={() => navigation.navigate('AddDiaryEntry', {})}
+          activeOpacity={0.8}
         >
           <Feather name="plus" size={20} color="#FFF" />
         </TouchableOpacity>
