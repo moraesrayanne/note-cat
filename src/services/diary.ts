@@ -29,6 +29,15 @@ export async function upsertDiaryEntry(entry: UpsertPayload) {
     .single();
 }
 
+export async function updateDiaryEntry(id: string, entry: UpsertPayload) {
+  return supabase
+    .from('diary_entries')
+    .update({ ...entry, updated_at: new Date().toISOString() })
+    .eq('id', id)
+    .select()
+    .single();
+}
+
 export async function deleteDiaryEntry(id: string) {
   return supabase.from('diary_entries').delete().eq('id', id);
 }

@@ -9,15 +9,23 @@ import {
   Alert,
   Keyboard,
   KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { Feather } from '@expo/vector-icons';
+import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 
 import { useAuth } from '@/contexts/AuthContext';
 import { useProfile } from '@/contexts/ProfileContext';
 import { colors } from '@/theme';
-import { upsertDiaryEntry, deleteDiaryEntry } from '@/services/diary';
-import { getTodayDate, formatDateLabel } from '@/utils/date';
+import {
+  upsertDiaryEntry,
+  updateDiaryEntry,
+  deleteDiaryEntry,
+  fetchDiaryEntryByDate,
+} from '@/services/diary';
+import { getTodayDate, formatDateLabel, toDateStr } from '@/utils/date';
 import { RootStackParamList } from '@/navigation/types';
 import { commonStyles } from '@/styles/common';
 import { ENERGY_EMOJIS, ENERGY_LABELS } from '@/constants/diary';
@@ -30,9 +38,10 @@ export default function AddDiaryEntryScreen({ navigation, route }: Props) {
   const { catName } = useProfile();
   const insets = useSafeAreaInsets();
   const existing = route.params?.entry;
+  const today = getTodayDate();
 
-  const entryDate = existing?.date ?? getTodayDate();
-
+  const [entryDate, setEntryDate] = useState(existing?.date ?? today);
+  const [showDatePicker, setShowDatePicker] = useState(false);
   const [feeding, setFeeding] = useState(existing?.feeding ?? '');
   const [usedLitterBox, setUsedLitterBox] = useState<boolean | null>(
     existing?.used_litter_box ?? null,
@@ -71,11 +80,22 @@ export default function AddDiaryEntryScreen({ navigation, route }: Props) {
     );
   };
 
-  const handleSave = async () => {
+  const handleDateChange = (event: DateTimePickerEvent, selected?: Date) => {
+    setShowDatePicker(Platform.OS === 'ios');
+    if (event.type === 'set' && selected) {
+      setEntryDate(toDateStr(selected));
+    }
+  };
+
+  const saveEntry = async (conflictingIdToRemove?: string) => {
     if (!user) return;
     setSaving(true);
 
-    const { error } = await upsertDiaryEntry({
+    if (conflictingIdToRemove) {
+      await deleteDiaryEntry(conflictingIdToRemove);
+    }
+
+    const payload = {
       user_id: user.id,
       date: entryDate,
       feeding: feeding.trim() || null,
@@ -83,7 +103,11 @@ export default function AddDiaryEntryScreen({ navigation, route }: Props) {
       energy_level: energyLevel,
       blood_pressure: bloodPressure.trim() || null,
       notes: notes.trim() || null,
-    });
+    };
+
+    const { error } = existing
+      ? await updateDiaryEntry(existing.id, payload)
+      : await upsertDiaryEntry(payload);
 
     setSaving(false);
 
@@ -92,6 +116,28 @@ export default function AddDiaryEntryScreen({ navigation, route }: Props) {
     } else {
       navigation.goBack();
     }
+  };
+
+  const handleSave = async () => {
+    if (!user) return;
+
+    const dateChanged = !existing || existing.date !== entryDate;
+    if (dateChanged) {
+      const { data: conflicting } = await fetchDiaryEntryByDate(user.id, entryDate);
+      if (conflicting && conflicting.id !== existing?.id) {
+        Alert.alert(
+          'Já existe um registro nessa data',
+          'Salvar vai substituir o registro existente para essa data. Deseja continuar?',
+          [
+            { text: 'Cancelar', style: 'cancel' },
+            { text: 'Substituir', style: 'destructive', onPress: () => saveEntry(conflicting.id) },
+          ],
+        );
+        return;
+      }
+    }
+
+    saveEntry();
   };
 
   return (
@@ -120,6 +166,26 @@ export default function AddDiaryEntryScreen({ navigation, route }: Props) {
             showsVerticalScrollIndicator={false}
             keyboardShouldPersistTaps="handled"
           >
+            <View style={styles.field}>
+              <Text style={styles.label}>Data</Text>
+              <TouchableOpacity
+                style={[styles.input, styles.dateButton]}
+                onPress={() => setShowDatePicker(true)}
+              >
+                <Text style={styles.dateButtonText}>{formatDateLabel(entryDate)}</Text>
+                <Feather name="calendar" size={18} color={colors.textMuted} />
+              </TouchableOpacity>
+              {showDatePicker && (
+                <DateTimePicker
+                  value={new Date(entryDate + 'T12:00:00')}
+                  mode="date"
+                  display="default"
+                  maximumDate={new Date()}
+                  onChange={handleDateChange}
+                />
+              )}
+            </View>
+
             <View style={styles.field}>
               <Text style={styles.label}>Alimentação</Text>
               <TextInput
